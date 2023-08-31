@@ -49,6 +49,7 @@ public struct Flow<Content>: Layout {
             if currentPoint.x > bounds.minX {
                 currentPoint.x += spacing
             }
+            if currentPoint.x + currentViewSize.width - 0.00000000001 > bounds.maxX {
                 currentPoint.x = bounds.minX
                 currentPoint.y += currentRowMaxHeight + spacing
                 currentRowMaxHeight = 0
