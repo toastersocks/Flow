@@ -65,10 +65,55 @@ public struct Flow: Layout {
 
 struct Flow_Previews: PreviewProvider {
     static var previews: some View {
-            ForEach(PreviewData.tags) { tag in
-                TagView(tag: tag)
+        VStack(alignment: .leading, spacing: 0) {
+            Color.clear //This makes the previews align to the leading edge
+                .frame(maxHeight: 0)
             Flow(spacing: 7) {
+                ForEach(PreviewData.tags) { tag in
+                    TagView(tag: tag)
+                }
             }
+            .border(.red)
         }
+        .previewDisplayName("Shuffled")
+        // MARK: - Wrong frame size returned by sizeThatFits corner case 1
+        VStack(alignment: .leading, spacing: 0) {
+            Color.clear //This makes the previews align to the leading edge
+                .frame(maxHeight: 0)
+            Flow(spacing: 7) {
+                ForEach(PreviewData.cornerCase1) { tag in
+                    TagView(tag: tag)
+                }
+            }
+            .border(.red)
+            .frame(width: 410) // Important for the corner case to show up.
+        }
+        .previewDisplayName("Corner Case 1")
+        // MARK: - Wrong frame size returned by sizeThatFits corner case 2
+        VStack(alignment: .leading, spacing: 0) {
+            Color.clear //This makes the previews align to the leading edge
+                .frame(maxHeight: 0)
+            Flow(spacing: 7) {
+                ForEach(PreviewData.cornerCase2) { tag in
+                    TagView(tag: tag)
+                }
+            }
+            .border(.red)
+        }
+        .previewDisplayName("Corner Case 2")
+
+        VStack(alignment: .leading, spacing: 0) {
+            Color.clear //This makes the previews align to the leading edge
+                .frame(maxHeight: 0)
+            Flow(spacing: 7) {
+                ForEach(0..<20) { _ in
+                    Color.rainbow.random()
+                        .frame(width: .random(in: 40...200).rounded(),
+                               height: .random(in: 30...90).rounded())
+                }
+            }
+            .border(.red)
+        }
+        .previewDisplayName("Random sizes")
     }
 }
