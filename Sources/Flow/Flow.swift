@@ -11,35 +11,7 @@ public struct Flow<Content>: Layout {
 
         let minimumParentWidth = idealChildSizes.map(\.width).max() ?? 0
 
-        let offeredWidth = max(proposal.width ?? totalChildWidthWithSpacing, minimumParentWidth) // Space offered to parent
-
-        var maxRowWidth: CGFloat = 0 // longest row
-        var maxRowHeights: [CGFloat] = [] // tallest height in each row
-        var currentRowSizes: [CGSize] = []
-
-        for (index, view) in subviews.enumerated() {
-            let currentViewSize = view.sizeThatFits(.unspecified)
-            let potentialRow = currentRowSizes + [currentViewSize]
-            let potentialRowWidth = potentialRow.map(\.width).reduce(0, +) + spacing * CGFloat(potentialRow.count - 1)
-
-            if potentialRowWidth <= offeredWidth {
-                currentRowSizes = potentialRow
-                maxRowWidth = max(maxRowWidth, potentialRowWidth)
-            }
-
-            if potentialRowWidth > offeredWidth || index == subviews.endIndex - 1 {
-                if let maxRowHeight = currentRowSizes.map(\.height).max() {
-                    maxRowHeights.append(maxRowHeight)
-                }
-                currentRowSizes = [currentViewSize]
-            }
-        }
-        let totalHeight: CGFloat = maxRowHeights.reduce(0, +) + spacing * CGFloat(maxRowHeights.count - 1)
-        let parentSize = CGSize(width: maxRowWidth, height: totalHeight)
-        print("Returning size of: \(parentSize)")
-
-        return parentSize
-    }
+        let boundsWidth = max(proposal.width ?? totalChildWidthWithSpacing, minimumParentWidth)
 
     public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         print("bounds: \(bounds), proposal: \(proposal)")
@@ -52,7 +24,22 @@ public struct Flow<Content>: Layout {
                 currentPoint.x += spacing
             }
 
-            if currentPoint.x + currentViewSize.width > bounds.maxX {
+            if currentPoint.x + currentViewSize.width > boundsWidth {
+                currentPoint.x = 0
+                currentPoint.y += currentRowMaxHeight + spacing
+            }
+
+            currentRowMaxHeight = max(currentRowMaxHeight, currentViewSize.height)
+
+            currentPoint.x += currentViewSize.width
+
+            maxX = max(maxX, currentPoint.x)
+            maxY = max(maxY, currentPoint.y + currentViewSize.height)
+        }
+
+        return CGSize(width: maxX, height: maxY)
+    }
+
                 currentPoint.x = bounds.minX
                 currentPoint.y += currentRowMaxHeight + spacing
                 currentRowMaxHeight = 0
