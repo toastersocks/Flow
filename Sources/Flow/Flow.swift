@@ -13,10 +13,11 @@ public struct Flow<Content>: Layout {
 
         let boundsWidth = max(proposal.width ?? totalChildWidthWithSpacing, minimumParentWidth)
 
-    public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        print("bounds: \(bounds), proposal: \(proposal)")
-        var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
+        var currentPoint = CGPoint(x: 0, y: 0)
         var currentRowMaxHeight: CGFloat = 0
+
+        var maxX: CGFloat = 0
+        var maxY: CGFloat = 0
 
         for view in subviews {
             let currentViewSize = view.sizeThatFits(.unspecified)
@@ -40,6 +41,14 @@ public struct Flow<Content>: Layout {
         return CGSize(width: maxX, height: maxY)
     }
 
+    public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
+        var currentRowMaxHeight: CGFloat = 0
+        for view in subviews {
+            let currentViewSize = view.sizeThatFits(.unspecified)
+            if currentPoint.x > bounds.minX {
+                currentPoint.x += spacing
+            }
                 currentPoint.x = bounds.minX
                 currentPoint.y += currentRowMaxHeight + spacing
                 currentRowMaxHeight = 0
