@@ -48,7 +48,7 @@ public struct Flow<Content>: Layout {
 
         for view in subviews {
             let currentViewSize = view.sizeThatFits(.unspecified)
-            if currentPoint.x > bounds.minX && currentPoint.x + currentViewSize.width <= bounds.maxX {
+            if currentPoint.x > 0 {
                 currentPoint.x += spacing
             }
 
