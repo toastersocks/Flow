@@ -27,7 +27,8 @@ public struct Flow: Layout {
 
             if currentPoint.x + currentViewSize.width > boundsWidth {
                 currentPoint.x = 0
-                currentPoint.y += currentRowMaxHeight + spacing
+                currentPoint.y += spacing + currentRowMaxHeight
+                currentRowMaxHeight = 0
             }
 
             currentRowMaxHeight = max(currentRowMaxHeight, currentViewSize.height)
