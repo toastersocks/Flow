@@ -1,7 +1,7 @@
 import SwiftUI
 
 
-public struct Flow<Content>: Layout {
+public struct Flow: Layout {
     let spacing: CGFloat
 
 
@@ -65,9 +65,9 @@ public struct Flow<Content>: Layout {
 
 struct Flow_Previews: PreviewProvider {
     static var previews: some View {
-        Flow<Any>(spacing: 7) {
             ForEach(PreviewData.tags) { tag in
                 TagView(tag: tag)
+            Flow(spacing: 7) {
             }
         }
     }
