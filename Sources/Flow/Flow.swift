@@ -5,7 +5,7 @@ public struct Flow: Layout {
     let alignment: Alignment
     let spacing: CGFloat
 
-    init(alignment: Alignment = .leading, spacing: CGFloat) {
+    init(alignment: Alignment = .topLeading, spacing: CGFloat) {
         self.alignment = alignment
         self.spacing = spacing
     }
@@ -69,20 +69,18 @@ public struct Flow: Layout {
                 let unusedHorizontalSpace = bounds.maxX - totalRowWidth
                 var subviewAnchor: UnitPoint = .topLeading
                 switch alignment {
-                case .bottomLeading, .bottom:
+                case .bottomLeading:
                     currentPoint.y += totalRowHeight
                     subviewAnchor = .bottomLeading
                     fallthrough
-                case .leading, .topLeading:
+                case .topLeading:
                     currentPoint.x = bounds.minX
                 case .bottomTrailing:
                     currentPoint.y += totalRowHeight
                     subviewAnchor = .bottomLeading
                     fallthrough
-                case .trailing, .topTrailing:
+                case .topTrailing:
                     currentPoint.x = bounds.minX + unusedHorizontalSpace
-                default:
-                    break
                 }
                 for rowSubview in rowSubviews {
                     rowSubview.place(at: currentPoint, anchor: subviewAnchor, proposal: .unspecified)
@@ -94,19 +92,17 @@ public struct Flow: Layout {
 
                 if isLast && wouldOverflow {
                     switch alignment {
-                    case .bottomLeading, .bottom:
+                    case .bottomLeading:
                         currentPoint.y += view.sizeThatFits(.unspecified).height
                         fallthrough
-                    case .leading, .topLeading:
+                    case .topLeading:
                         currentPoint.x = bounds.minX
                     case .bottomTrailing:
                         currentPoint.y += view.sizeThatFits(.unspecified).height
                         fallthrough
-                    case .trailing, .topTrailing:
+                    case .topTrailing:
                         let unusedSpace = bounds.maxX - view.sizeThatFits(.unspecified).width
                         currentPoint.x = bounds.minX + unusedSpace
-                    default:
-                        break
                     }
                     view.place(at: currentPoint, anchor: subviewAnchor, proposal: .unspecified)
                 }
@@ -117,10 +113,6 @@ public struct Flow: Layout {
     }
 
     enum Alignment {
-        case leading
-        case trailing
-        case top
-        case bottom
         case topLeading
         case topTrailing
         case bottomLeading
@@ -185,7 +177,7 @@ struct Flow_Previews: PreviewProvider {
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
                 .frame(maxHeight: 0)
-            Flow(alignment: .trailing, spacing: 7) {
+            Flow(alignment: .topTrailing, spacing: 7) {
                 ForEach(PreviewData.tags) { tag in
                     TagView(tag: tag)
                 }
@@ -197,7 +189,7 @@ struct Flow_Previews: PreviewProvider {
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
                 .frame(maxHeight: 0)
-            Flow(alignment: .trailing, spacing: 7) {
+            Flow(alignment: .topTrailing, spacing: 7) {
                 ForEach(PreviewData.cornerCase1) { tag in
                     TagView(tag: tag)
                 }
@@ -210,7 +202,7 @@ struct Flow_Previews: PreviewProvider {
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
                 .frame(maxHeight: 0)
-            Flow(alignment: .trailing, spacing: 7) {
+            Flow(alignment: .topTrailing, spacing: 7) {
                 ForEach(PreviewData.cornerCase2) { tag in
                     TagView(tag: tag)
                 }
@@ -222,7 +214,7 @@ struct Flow_Previews: PreviewProvider {
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
                 .frame(maxHeight: 0)
-            Flow(alignment: .trailing, spacing: 7) {
+            Flow(alignment: .topTrailing, spacing: 7) {
                 ForEach(0..<20) { _ in
                     Color.rainbow.random()
                         .frame(width: .random(in: 40...200).rounded(),
