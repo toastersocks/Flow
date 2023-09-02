@@ -122,6 +122,7 @@ public struct Flow: Layout {
 
 struct Flow_Previews: PreviewProvider {
     static var previews: some View {
+        Group {
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
                 .frame(maxHeight: 0)
@@ -132,7 +133,8 @@ struct Flow_Previews: PreviewProvider {
             }
             .border(.red)
         }
-        .previewDisplayName("Shuffled")
+        .previewDisplayName("Leading Shuffled")
+
         // MARK: - Wrong frame size returned by sizeThatFits corner case 1
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
@@ -145,7 +147,8 @@ struct Flow_Previews: PreviewProvider {
             .border(.red)
             .frame(width: 410) // Important for the corner case to show up.
         }
-        .previewDisplayName("Corner Case 1")
+        .previewDisplayName("Leading Corner Case 1")
+
         // MARK: - Wrong frame size returned by sizeThatFits corner case 2
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
@@ -157,7 +160,7 @@ struct Flow_Previews: PreviewProvider {
             }
             .border(.red)
         }
-        .previewDisplayName("Corner Case 2")
+        .previewDisplayName("Leading Corner Case 2")
 
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
@@ -171,8 +174,9 @@ struct Flow_Previews: PreviewProvider {
             }
             .border(.red)
         }
-        .previewDisplayName("Random sizes")
-
+        .previewDisplayName("Leading Random sizes")
+    }
+        Group {
         // MARK: - Trailing
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
@@ -224,9 +228,9 @@ struct Flow_Previews: PreviewProvider {
             .border(.red)
         }
         .previewDisplayName("Trailing Random sizes")
-
-        // MARK: - Bottom alignment
+    }
         Group {
+            // MARK: - Bottom alignment
             VStack(alignment: .leading, spacing: 0) {
                 Color.clear //This makes the previews align to the leading edge
                     .frame(maxHeight: 0)
@@ -278,6 +282,5 @@ struct Flow_Previews: PreviewProvider {
             }
             .previewDisplayName("Bottom Trailing Random sizes")
         }
-
     }
 }
