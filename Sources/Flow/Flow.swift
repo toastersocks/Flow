@@ -54,45 +54,61 @@ public struct Flow: Layout {
         for (subviewIndex, view) in subviews.enumerated() {
             let currentViewSize = view.sizeThatFits(.unspecified)
             let currentRowWidth = rowSubviews.map { $0.sizeThatFits(.unspecified).width }.reduce(0, +) + spacing * CGFloat(rowSubviews.count - 1)
+            let currentRowHeight = rowSubviews.map { $0.sizeThatFits(.unspecified).height }.max() ?? 0
             let wouldOverflow = currentPoint.x + currentRowWidth + currentViewSize.width - 0.00000000001 > bounds.maxX
             let isLast = subviewIndex == subviews.indices.last
 
             if wouldOverflow || isLast {
                 let totalRowWidth = currentRowWidth + (wouldOverflow ? 0 : currentViewSize.width + spacing)
-                let unusedSpace = bounds.maxX - totalRowWidth
-                print("Total row width: \(totalRowWidth)")
-                print("unused space: \(unusedSpace)")
-                switch alignment {
-                case .leading:
-                    currentPoint.x = bounds.minX
-                case .trailing:
-                    currentPoint.x = bounds.minX + unusedSpace
-                default:
-                    break
-                }
+                let totalRowHeight = max(currentRowHeight, wouldOverflow ? 0 : currentViewSize.height)
+
                 if !wouldOverflow {
                     rowSubviews.append(view)
                 }
+
+                let unusedHorizontalSpace = bounds.maxX - totalRowWidth
+                var subviewAnchor: UnitPoint = .topLeading
+                switch alignment {
+                case .bottomLeading, .bottom:
+                    currentPoint.y += totalRowHeight
+                    subviewAnchor = .bottomLeading
+                    fallthrough
+                case .leading, .topLeading:
+                    currentPoint.x = bounds.minX
+                case .bottomTrailing:
+                    currentPoint.y += totalRowHeight
+                    subviewAnchor = .bottomLeading
+                    fallthrough
+                case .trailing, .topTrailing:
+                    currentPoint.x = bounds.minX + unusedHorizontalSpace
+                default:
+                    break
+                }
                 for rowSubview in rowSubviews {
-                    rowSubview.place(at: currentPoint, anchor: .topLeading, proposal: .unspecified)
+                    rowSubview.place(at: currentPoint, anchor: subviewAnchor, proposal: .unspecified)
                     currentPoint.x += rowSubview.sizeThatFits(.unspecified).width + spacing
                 }
                 currentPoint.x = bounds.minX
-                let maxHeight = (rowSubviews.map { $0.sizeThatFits(.unspecified).height }.max() ?? 0)
-                currentPoint.y += maxHeight + spacing
+                currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing
                 rowSubviews = [view]
 
                 if isLast && wouldOverflow {
                     switch alignment {
-                    case .leading:
+                    case .bottomLeading, .bottom:
+                        currentPoint.y += view.sizeThatFits(.unspecified).height
+                        fallthrough
+                    case .leading, .topLeading:
                         currentPoint.x = bounds.minX
-                    case .trailing:
+                    case .bottomTrailing:
+                        currentPoint.y += view.sizeThatFits(.unspecified).height
+                        fallthrough
+                    case .trailing, .topTrailing:
                         let unusedSpace = bounds.maxX - view.sizeThatFits(.unspecified).width
                         currentPoint.x = bounds.minX + unusedSpace
                     default:
                         break
                     }
-                    view.place(at: currentPoint, anchor: .topLeading, proposal: .unspecified)
+                    view.place(at: currentPoint, anchor: subviewAnchor, proposal: .unspecified)
                 }
             } else {
                 rowSubviews.append(view)
@@ -216,5 +232,60 @@ struct Flow_Previews: PreviewProvider {
             .border(.red)
         }
         .previewDisplayName("Trailing Random sizes")
+
+        // MARK: - Bottom alignment
+        Group {
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .bottomTrailing, spacing: 7) {
+                    ForEach(PreviewData.tags) { tag in
+                        TagView(tag: tag)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Bottom Trailing Shuffled")
+            // MARK: - Wrong frame size returned by sizeThatFits corner case 1
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .bottomTrailing, spacing: 7) {
+                    ForEach(PreviewData.cornerCase1) { tag in
+                        TagView(tag: tag)
+                    }
+                }
+                .border(.red)
+                .frame(width: 410) // Important for the corner case to show up.
+            }
+            .previewDisplayName("Bottom Trailing Corner Case 1")
+            // MARK: - Wrong frame size returned by sizeThatFits corner case 2
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .bottomTrailing, spacing: 7) {
+                    ForEach(PreviewData.cornerCase2) { tag in
+                        TagView(tag: tag)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Bottom Trailing Corner Case 2")
+
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .bottomTrailing, spacing: 7) {
+                    ForEach(0..<20) { _ in
+                        Color.rainbow.random()
+                            .frame(width: .random(in: 40...200).rounded(),
+                                   height: .random(in: 30...90).rounded())
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Bottom Trailing Random sizes")
+        }
+
     }
 }
