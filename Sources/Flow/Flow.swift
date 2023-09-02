@@ -58,9 +58,9 @@ public struct Flow: Layout {
     /// This internal method takes a bounds rect and an array of `CGSize` and returns an array of `CGRect` representing the placed sizes using the flow's alignment and spacing within the bounds rect. `Flow`'s implementation of `placeSubview(in: proposal: subviews: cache:)` calls this method internally to calculate view placement. This is broken out to allow for testing.
     /// - Parameters:
     ///   - bounds: The bounds in which to place the sizes.
-    ///   - subviewSizes: An array of sizes for which to calculate placement.
-    /// - Returns: An array of `CGRect` representing the placed sizes. The origins of the rects are normalized to the top-left of the rects. The bounding box encompassing the full extents of the rects can be found by performing a union of all the rects
-    func placeSubviews(in bounds: CGRect, subviewSizes: [CGSize]) -> [CGRect] {
+    ///   - sizes: An array of sizes for which to calculate placement.
+    /// - Returns: An array of `CGRect` representing the placed sizes. The origins of the rects are normalized to the top-left of the rects. The bounding box encompassing the full extents of the rects can be found by performing a union of all the rects.
+    func getRects(for sizes: [CGSize], in bounds: CGRect) -> [CGRect] {
         var viewRects: [CGRect] = []
 
         func place(size: CGSize, at point: CGPoint, anchor: UnitPoint) {
@@ -73,12 +73,12 @@ public struct Flow: Layout {
         var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
         var rowSubviews: [CGSize] = []
 
-        for (subviewIndex, viewSize) in subviewSizes.enumerated() {
+        for (subviewIndex, viewSize) in sizes.enumerated() {
             let currentViewSize = viewSize
             let currentRowWidth = rowSubviews.map { $0.width }.reduce(0, +) + spacing * CGFloat(rowSubviews.count - 1)
             let currentRowHeight = rowSubviews.map { $0.height }.max() ?? 0
             let wouldOverflow = currentPoint.x + currentRowWidth + currentViewSize.width - 0.00000000001 > bounds.maxX
-            let isLast = subviewIndex == subviewSizes.indices.last
+            let isLast = subviewIndex == sizes.indices.last
 
             if wouldOverflow || isLast {
                 let totalRowWidth = currentRowWidth + (wouldOverflow ? 0 : currentViewSize.width + spacing)
@@ -137,7 +137,8 @@ public struct Flow: Layout {
     }
 
     public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let viewRects = placeSubviews(in: bounds, subviewSizes: subviews.map { $0.sizeThatFits(.unspecified) })
+        let viewRects = getRects(for: subviews.map { $0.sizeThatFits(.unspecified) },
+                              in: bounds)
 
         for (subview, rect) in zip(subviews, viewRects) {
             subview.place(at: rect.origin, anchor: .topLeading, proposal: .unspecified)
