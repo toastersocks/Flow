@@ -147,7 +147,7 @@ extension Color {
 }
 
 @available(iOS 15, macOS 12, *)
-public extension Color {
+extension Color {
     static var rainbow: Rainbow.Type {
         Rainbow.self
     }
@@ -170,7 +170,7 @@ public extension Color {
             .indigo,
             .purple,
         ]
-        public static func random() -> Color {
+        static func random() -> Color {
             allColors.randomElement()!
         }
     }
