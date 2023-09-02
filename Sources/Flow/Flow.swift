@@ -5,7 +5,7 @@ public struct Flow: Layout {
     let alignment: Alignment
     let spacing: CGFloat
 
-    init(alignment: Alignment = .topLeading, spacing: CGFloat) {
+    public init(alignment: Alignment = .topLeading, spacing: CGFloat) {
         self.alignment = alignment
         self.spacing = spacing
     }
@@ -112,7 +112,7 @@ public struct Flow: Layout {
         }
     }
 
-    enum Alignment {
+    public enum Alignment: CaseIterable {
         case topLeading
         case topTrailing
         case bottomLeading
