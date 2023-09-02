@@ -10,11 +10,15 @@ public struct Flow: Layout {
         self.spacing = spacing
     }
 
-    public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let idealChildSizes = subviews.map { $0.sizeThatFits(.unspecified) }
-        let totalChildWidthWithSpacing = idealChildSizes.map(\.width).reduce(0, +) + (spacing * CGFloat(subviews.count - 1))
+    /// This internal method takes a proposed view size and an array of `CGSize` and returns a `CGSize` representing the bounding box that contains all the placed views,  using the flow's alignment and spacing. `Flow`'s implementation of `sizeThatFits(proposal: subviews: cache:)` calls this method internally to calculate the returned bounds. This is broken out to allow for testing.
+    /// - Parameters:
+    ///   - proposal: The proposed size offered to place views.
+    ///   - subviewSizes: An array of sizes for which to calculate the bounding box.
+    /// - Returns: A `CGSize` representing the bounding box containing the placed sizes.
+    func sizeThatFits(proposal: ProposedViewSize, subviewSizes: [CGSize]) -> CGSize {
+        let totalChildWidthWithSpacing = subviewSizes.map(\.width).reduce(0, +) + (spacing * CGFloat(subviewSizes.count - 1))
 
-        let minimumParentWidth = idealChildSizes.map(\.width).max() ?? 0
+        let minimumParentWidth = subviewSizes.map(\.width).max() ?? 0
 
         let boundsWidth = max(proposal.width ?? totalChildWidthWithSpacing, minimumParentWidth)
 
@@ -24,8 +28,7 @@ public struct Flow: Layout {
         var maxX: CGFloat = 0
         var maxY: CGFloat = 0
 
-        for view in subviews {
-            let currentViewSize = view.sizeThatFits(.unspecified)
+        for currentViewSize in subviewSizes {
             if currentPoint.x > 0 {
                 currentPoint.x += spacing
             }
@@ -47,23 +50,42 @@ public struct Flow: Layout {
         return CGSize(width: maxX, height: maxY)
     }
 
-    public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
-        var rowSubviews: [LayoutSubview] = []
+    public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        sizeThatFits(proposal: proposal, subviewSizes: subviews.map { $0.sizeThatFits(.unspecified) })
+    }
 
-        for (subviewIndex, view) in subviews.enumerated() {
-            let currentViewSize = view.sizeThatFits(.unspecified)
-            let currentRowWidth = rowSubviews.map { $0.sizeThatFits(.unspecified).width }.reduce(0, +) + spacing * CGFloat(rowSubviews.count - 1)
-            let currentRowHeight = rowSubviews.map { $0.sizeThatFits(.unspecified).height }.max() ?? 0
+
+    /// This internal method takes a bounds rect and an array of `CGSize` and returns an array of `CGRect` representing the placed sizes using the flow's alignment and spacing within the bounds rect. `Flow`'s implementation of `placeSubview(in: proposal: subviews: cache:)` calls this method internally to calculate view placement. This is broken out to allow for testing.
+    /// - Parameters:
+    ///   - bounds: The bounds in which to place the sizes.
+    ///   - subviewSizes: An array of sizes for which to calculate placement.
+    /// - Returns: An array of `CGRect` representing the placed sizes. The origins of the rects are normalized to the top-left of the rects. The bounding box encompassing the full extents of the rects can be found by performing a union of all the rects
+    func placeSubviews(in bounds: CGRect, subviewSizes: [CGSize]) -> [CGRect] {
+        var viewRects: [CGRect] = []
+
+        func place(size: CGSize, at point: CGPoint, anchor: UnitPoint) {
+            let topLeft = CGPoint(x: point.x + size.width * anchor.x, y: point.y + size.height * anchor.y)
+            let normalizedRect = CGRect(origin: topLeft, size: size)
+
+            viewRects.append(normalizedRect)
+        }
+
+        var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
+        var rowSubviews: [CGSize] = []
+
+        for (subviewIndex, viewSize) in subviewSizes.enumerated() {
+            let currentViewSize = viewSize
+            let currentRowWidth = rowSubviews.map { $0.width }.reduce(0, +) + spacing * CGFloat(rowSubviews.count - 1)
+            let currentRowHeight = rowSubviews.map { $0.height }.max() ?? 0
             let wouldOverflow = currentPoint.x + currentRowWidth + currentViewSize.width - 0.00000000001 > bounds.maxX
-            let isLast = subviewIndex == subviews.indices.last
+            let isLast = subviewIndex == subviewSizes.indices.last
 
             if wouldOverflow || isLast {
                 let totalRowWidth = currentRowWidth + (wouldOverflow ? 0 : currentViewSize.width + spacing)
                 let totalRowHeight = max(currentRowHeight, wouldOverflow ? 0 : currentViewSize.height)
 
                 if !wouldOverflow {
-                    rowSubviews.append(view)
+                    rowSubviews.append(viewSize)
                 }
 
                 let unusedHorizontalSpace = bounds.maxX - totalRowWidth
@@ -83,32 +105,42 @@ public struct Flow: Layout {
                     currentPoint.x = bounds.minX + unusedHorizontalSpace
                 }
                 for rowSubview in rowSubviews {
-                    rowSubview.place(at: currentPoint, anchor: subviewAnchor, proposal: .unspecified)
-                    currentPoint.x += rowSubview.sizeThatFits(.unspecified).width + spacing
+                    place(size: rowSubview, at: currentPoint, anchor: subviewAnchor)
+                    currentPoint.x += rowSubview.width + spacing
                 }
                 currentPoint.x = bounds.minX
                 currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing
-                rowSubviews = [view]
+                rowSubviews = [viewSize]
 
                 if isLast && wouldOverflow {
                     switch alignment {
                     case .bottomLeading:
-                        currentPoint.y += view.sizeThatFits(.unspecified).height
+                        currentPoint.y += viewSize.height
                         fallthrough
                     case .topLeading:
                         currentPoint.x = bounds.minX
                     case .bottomTrailing:
-                        currentPoint.y += view.sizeThatFits(.unspecified).height
+                        currentPoint.y += viewSize.height
                         fallthrough
                     case .topTrailing:
-                        let unusedSpace = bounds.maxX - view.sizeThatFits(.unspecified).width
+                        let unusedSpace = bounds.maxX - viewSize.width
                         currentPoint.x = bounds.minX + unusedSpace
                     }
-                    view.place(at: currentPoint, anchor: subviewAnchor, proposal: .unspecified)
+                    place(size: viewSize, at: currentPoint, anchor: subviewAnchor)
                 }
             } else {
-                rowSubviews.append(view)
+                rowSubviews.append(viewSize)
             }
+        }
+
+        return viewRects
+    }
+
+    public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let viewRects = placeSubviews(in: bounds, subviewSizes: subviews.map { $0.sizeThatFits(.unspecified) })
+
+        for (subview, rect) in zip(subviews, viewRects) {
+            subview.place(at: rect.origin, anchor: .topLeading, proposal: .unspecified)
         }
     }
 
