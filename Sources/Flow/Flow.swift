@@ -33,7 +33,10 @@ public struct Flow: Layout {
                 currentPoint.x += spacing
             }
 
-            if currentPoint.x + currentViewSize.width > boundsWidth {
+            let rowBoundsDifference = currentPoint.x + currentViewSize.width - boundsWidth
+            let wouldOverflow = rowBoundsDifference > 0.000_000_000_001
+
+            if wouldOverflow {
                 currentPoint.x = 0
                 currentPoint.y += spacing + currentRowMaxHeight
                 currentRowMaxHeight = 0
@@ -76,7 +79,9 @@ public struct Flow: Layout {
         for (subviewIndex, currentViewSize) in sizes.enumerated() {
             let currentRowWidth = rowSubviews.map { $0.width }.reduce(0, +) + spacing * CGFloat(rowSubviews.count - 1)
             let currentRowHeight = rowSubviews.map { $0.height }.max() ?? 0
-            let wouldOverflow = currentPoint.x + currentRowWidth + currentViewSize.width - 0.00000000001 > bounds.maxX
+            let rowBoundsDifference = currentPoint.x + currentRowWidth + currentViewSize.width - bounds.maxX
+
+            let wouldOverflow = rowBoundsDifference > 0.000_000_000_001
             let isLast = subviewIndex == sizes.indices.last
 
             if wouldOverflow || isLast {
