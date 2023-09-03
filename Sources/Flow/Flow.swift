@@ -73,8 +73,7 @@ public struct Flow: Layout {
         var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
         var rowSubviews: [CGSize] = []
 
-        for (subviewIndex, viewSize) in sizes.enumerated() {
-            let currentViewSize = viewSize
+        for (subviewIndex, currentViewSize) in sizes.enumerated() {
             let currentRowWidth = rowSubviews.map { $0.width }.reduce(0, +) + spacing * CGFloat(rowSubviews.count - 1)
             let currentRowHeight = rowSubviews.map { $0.height }.max() ?? 0
             let wouldOverflow = currentPoint.x + currentRowWidth + currentViewSize.width - 0.00000000001 > bounds.maxX
@@ -85,7 +84,7 @@ public struct Flow: Layout {
                 let totalRowHeight = max(currentRowHeight, wouldOverflow ? 0 : currentViewSize.height)
 
                 if !wouldOverflow {
-                    rowSubviews.append(viewSize)
+                    rowSubviews.append(currentViewSize)
                 }
 
                 let unusedHorizontalSpace = bounds.maxX - totalRowWidth
@@ -110,26 +109,26 @@ public struct Flow: Layout {
                 }
                 currentPoint.x = bounds.minX
                 currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing
-                rowSubviews = [viewSize]
+                rowSubviews = [currentViewSize]
 
                 if isLast && wouldOverflow {
                     switch alignment {
                     case .bottomLeading:
-                        currentPoint.y += viewSize.height
+                        currentPoint.y += currentViewSize.height
                         fallthrough
                     case .topLeading:
                         currentPoint.x = bounds.minX
                     case .bottomTrailing:
-                        currentPoint.y += viewSize.height
+                        currentPoint.y += currentViewSize.height
                         fallthrough
                     case .topTrailing:
-                        let unusedSpace = bounds.maxX - viewSize.width
+                        let unusedSpace = bounds.maxX - currentViewSize.width
                         currentPoint.x = bounds.minX + unusedSpace
                     }
-                    place(size: viewSize, at: currentPoint, anchor: subviewAnchor)
+                    place(size: currentViewSize, at: currentPoint, anchor: subviewAnchor)
                 }
             } else {
-                rowSubviews.append(viewSize)
+                rowSubviews.append(currentViewSize)
             }
         }
 
