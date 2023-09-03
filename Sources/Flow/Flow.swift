@@ -64,7 +64,7 @@ public struct Flow: Layout {
         var viewRects: [CGRect] = []
 
         func place(size: CGSize, at point: CGPoint, anchor: UnitPoint) {
-            let topLeft = CGPoint(x: point.x + size.width * anchor.x, y: point.y + size.height * anchor.y)
+            let topLeft = CGPoint(x: point.x - size.width * anchor.x, y: point.y - size.height * anchor.y)
             let normalizedRect = CGRect(origin: topLeft, size: size)
 
             viewRects.append(normalizedRect)
