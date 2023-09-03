@@ -15,30 +15,22 @@ struct Tag: Identifiable {
 }
 
 let tagNames = [
-"Tag1", // 0
-"Tag2", // 1
-"Tag3", // 2
-"Tag4", // 3
-"Really Quite long tag name", // 4
-"PN: 3409573", // 5
-"High Rate", // 6
-"Office", // 7
-"Field", // 8
-"Task: Technical Support", // 9
-"😸", // 10
+"Tag1",
+"Tag2",
+"Tag3",
+"Tag4",
+"Really Quite long tag name",
+"PN: 3409573",
+"High Rate",
+"Office",
+"Field",
+"Task: Technical Support",
+"😸",
 ]
 
 let shuffledTags = tagNames.shuffled()
 
 let cornerCase1Names = [
-//    tagNames[3],
-//    tagNames[6],
-//    tagNames[10],
-//    tagNames[1],
-//    tagNames[0],
-//    tagNames[5],
-//    tagNames[9],
-//    tagNames[8],
     tagNames[4],
     tagNames[7],
     tagNames[2],
