@@ -162,6 +162,7 @@ struct Flow_Previews: PreviewProvider {
             Flow(spacing: 7) {
                 ForEach(PreviewData.tags) { tag in
                     TagView(tag: tag)
+                        .border(.teal, width: 4)
                 }
             }
             .border(.red)
@@ -175,6 +176,7 @@ struct Flow_Previews: PreviewProvider {
             Flow(spacing: 7) {
                 ForEach(PreviewData.cornerCase1) { tag in
                     TagView(tag: tag)
+                        .border(.teal, width: 4)
                 }
             }
             .border(.red)
@@ -189,6 +191,7 @@ struct Flow_Previews: PreviewProvider {
             Flow(spacing: 7) {
                 ForEach(PreviewData.cornerCase2) { tag in
                     TagView(tag: tag)
+                        .border(.teal, width: 4)
                 }
             }
             .border(.red)
@@ -203,6 +206,7 @@ struct Flow_Previews: PreviewProvider {
                     Color.rainbow.random()
                         .frame(width: .random(in: 40...200).rounded(),
                                height: .random(in: 30...90).rounded())
+                        .border(.teal, width: 4)
                 }
             }
             .border(.red)
@@ -217,6 +221,7 @@ struct Flow_Previews: PreviewProvider {
             Flow(alignment: .topTrailing, spacing: 7) {
                 ForEach(PreviewData.tags) { tag in
                     TagView(tag: tag)
+                        .border(.teal, width: 4)
                 }
             }
             .border(.red)
@@ -229,6 +234,7 @@ struct Flow_Previews: PreviewProvider {
             Flow(alignment: .topTrailing, spacing: 7) {
                 ForEach(PreviewData.cornerCase1) { tag in
                     TagView(tag: tag)
+                        .border(.teal, width: 4)
                 }
             }
             .border(.red)
@@ -242,6 +248,7 @@ struct Flow_Previews: PreviewProvider {
             Flow(alignment: .topTrailing, spacing: 7) {
                 ForEach(PreviewData.cornerCase2) { tag in
                     TagView(tag: tag)
+                        .border(.teal, width: 4)
                 }
             }
             .border(.red)
@@ -256,6 +263,7 @@ struct Flow_Previews: PreviewProvider {
                     Color.rainbow.random()
                         .frame(width: .random(in: 40...200).rounded(),
                                height: .random(in: 30...90).rounded())
+                        .border(.teal, width: 4)
                 }
             }
             .border(.red)
@@ -270,6 +278,7 @@ struct Flow_Previews: PreviewProvider {
                 Flow(alignment: .bottomTrailing, spacing: 7) {
                     ForEach(PreviewData.tags) { tag in
                         TagView(tag: tag)
+                            .border(.teal, width: 4)
                     }
                 }
                 .border(.red)
@@ -282,6 +291,7 @@ struct Flow_Previews: PreviewProvider {
                 Flow(alignment: .bottomTrailing, spacing: 7) {
                     ForEach(PreviewData.cornerCase1) { tag in
                         TagView(tag: tag)
+                            .border(.teal, width: 4)
                     }
                 }
                 .border(.red)
@@ -295,6 +305,7 @@ struct Flow_Previews: PreviewProvider {
                 Flow(alignment: .bottomTrailing, spacing: 7) {
                     ForEach(PreviewData.cornerCase2) { tag in
                         TagView(tag: tag)
+                            .border(.teal, width: 4)
                     }
                 }
                 .border(.red)
@@ -309,6 +320,7 @@ struct Flow_Previews: PreviewProvider {
                         Color.rainbow.random()
                             .frame(width: .random(in: 40...200).rounded(),
                                    height: .random(in: 30...90).rounded())
+                            .border(.teal, width: 4)
                     }
                 }
                 .border(.red)
