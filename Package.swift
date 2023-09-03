@@ -14,6 +14,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
+        .package(url: "https://github.com/typelift/SwiftCheck", .upToNextMajor(from: "0.12.0")),
         // .package(url: /* package url */, from: "1.0.0"),
     ],
     targets: [
@@ -24,6 +25,6 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "FlowTests",
-            dependencies: ["Flow"]),
+            dependencies: ["Flow", "SwiftCheck"]),
     ]
 )
