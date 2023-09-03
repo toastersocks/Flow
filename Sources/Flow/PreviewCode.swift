@@ -127,10 +127,7 @@ extension Color {
         var b: CGFloat = 0
         var o: CGFloat = 0
 
-        guard NativeColor(self).getRed(&r, green: &g, blue: &b, alpha: &o) else {
-            // You can handle the failure here as you want
-            return (0, 0, 0, 0)
-        }
+        NativeColor(self).getRed(&r, green: &g, blue: &b, alpha: &o)
 
         return (r, g, b, o)
     }
