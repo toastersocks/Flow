@@ -1,16 +1,23 @@
 import SwiftUI
 
 
+
+/// A Flow layout arranges its subviews in a line, wrapping at the edge and starting new lines as needed, similar to how words wrap in a paragraph.
 public struct Flow: Layout {
     let alignment: Alignment
     let spacing: CGFloat
 
+
+    /// Creates an instance with the given alignment and spacing.
+    /// - Parameters:
+    ///   - alignment: The alignment guide for aligning the subviews in the flow.
+    ///   - spacing: The distance between subviews. This spacing is not applied before the first, or after the last view in a row.
     public init(alignment: Alignment = .topLeading, spacing: CGFloat) {
         self.alignment = alignment
         self.spacing = spacing
     }
 
-    /// This internal method takes a proposed view size and an array of `CGSize` and returns a `CGSize` representing the bounding box that contains all the placed views,  using the flow's alignment and spacing. `Flow`'s implementation of `sizeThatFits(proposal: subviews: cache:)` calls this method internally to calculate the returned bounds. This is broken out to allow for testing.
+    /// Computes the overall size required to fit an array of subview sizes, based on a proposed view size.
     /// - Parameters:
     ///   - proposal: The proposed size offered to place views.
     ///   - subviewSizes: An array of sizes for which to calculate the bounding box.
@@ -58,7 +65,7 @@ public struct Flow: Layout {
     }
 
 
-    /// This internal method takes a bounds rect and an array of `CGSize` and returns an array of `CGRect` representing the placed sizes using the flow's alignment and spacing within the bounds rect. `Flow`'s implementation of `placeSubview(in: proposal: subviews: cache:)` calls this method internally to calculate view placement. This is broken out to allow for testing.
+    /// Determines the layout rectangles for a set of sizes within the given bounds, based on the flow's alignment and spacing.
     /// - Parameters:
     ///   - bounds: The bounds in which to place the sizes.
     ///   - sizes: An array of sizes for which to calculate placement.
@@ -149,6 +156,8 @@ public struct Flow: Layout {
         }
     }
 
+
+    /// The alignment of subviews within the flow.
     public enum Alignment: CaseIterable {
         case topLeading
         case topTrailing
