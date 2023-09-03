@@ -180,7 +180,6 @@ struct Flow_Previews: PreviewProvider {
                 }
             }
             .border(.red)
-            .frame(width: 410) // Important for the corner case to show up.
         }
         .previewDisplayName("Leading Corner Case 1")
 
@@ -238,7 +237,6 @@ struct Flow_Previews: PreviewProvider {
                 }
             }
             .border(.red)
-            .frame(width: 410) // Important for the corner case to show up.
         }
         .previewDisplayName("Trailing Corner Case 1")
         // MARK: - Wrong frame size returned by sizeThatFits corner case 2
@@ -295,7 +293,6 @@ struct Flow_Previews: PreviewProvider {
                     }
                 }
                 .border(.red)
-                .frame(width: 410) // Important for the corner case to show up.
             }
             .previewDisplayName("Bottom Trailing Corner Case 1")
             // MARK: - Wrong frame size returned by sizeThatFits corner case 2
