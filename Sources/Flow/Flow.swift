@@ -196,20 +196,6 @@ struct Flow_Previews: PreviewProvider {
         }
         .previewDisplayName("Leading Shuffled")
 
-        // MARK: - Wrong frame size returned by sizeThatFits corner case 1
-        VStack(alignment: .leading, spacing: 0) {
-            Color.clear //This makes the previews align to the leading edge
-                .frame(maxHeight: 0)
-            Flow(spacing: 7) {
-                ForEach(PreviewData.cornerCase1) { tag in
-                    TagView(tag: tag)
-                        .border(.teal, width: 4)
-                }
-            }
-            .border(.red)
-        }
-        .previewDisplayName("Leading Corner Case 1")
-
         // MARK: - Wrong frame size returned by sizeThatFits corner case 2
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
@@ -253,19 +239,7 @@ struct Flow_Previews: PreviewProvider {
             .border(.red)
         }
         .previewDisplayName("Trailing Shuffled")
-        // MARK: - Wrong frame size returned by sizeThatFits corner case 1
-        VStack(alignment: .leading, spacing: 0) {
-            Color.clear //This makes the previews align to the leading edge
-                .frame(maxHeight: 0)
-            Flow(alignment: .topTrailing, spacing: 7) {
-                ForEach(PreviewData.cornerCase1) { tag in
-                    TagView(tag: tag)
-                        .border(.teal, width: 4)
-                }
-            }
-            .border(.red)
-        }
-        .previewDisplayName("Trailing Corner Case 1")
+
         // MARK: - Wrong frame size returned by sizeThatFits corner case 2
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
