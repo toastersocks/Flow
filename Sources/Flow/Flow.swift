@@ -114,10 +114,20 @@ public struct Flow: Layout {
                     fallthrough
                 case .topTrailing:
                     currentPoint.x = bounds.minX + unusedHorizontalSpace
+                case .center:
+                    currentPoint.x = bounds.minX + unusedHorizontalSpace * 0.5
                 }
                 for rowSubview in rowSubviews {
+                    if alignment == .center {
+                        currentPoint.y += (totalRowHeight - rowSubview.height) * 0.5
+                    }
+
                     place(size: rowSubview, at: currentPoint, anchor: subviewAnchor)
                     currentPoint.x += rowSubview.width + spacing
+
+                    if alignment == .center {
+                        currentPoint.y -= (totalRowHeight - rowSubview.height) * 0.5
+                    }
                 }
                 currentPoint.x = bounds.minX
                 currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing
@@ -134,8 +144,11 @@ public struct Flow: Layout {
                         currentPoint.y += currentViewSize.height
                         fallthrough
                     case .topTrailing:
-                        let unusedSpace = bounds.maxX - currentViewSize.width
-                        currentPoint.x = bounds.minX + unusedSpace
+                        let unusedHorizontalSpace = bounds.maxX - currentViewSize.width
+                        currentPoint.x = bounds.minX + unusedHorizontalSpace
+                    case .center:
+                        let unusedHorizontalSpace = bounds.maxX - currentViewSize.width
+                        currentPoint.x = bounds.minX + unusedHorizontalSpace * 0.5
                     }
                     place(size: currentViewSize, at: currentPoint, anchor: subviewAnchor)
                 }
@@ -163,6 +176,7 @@ public struct Flow: Layout {
         case topTrailing
         case bottomLeading
         case bottomTrailing
+        case center
     }
 }
 
@@ -336,6 +350,36 @@ struct Flow_Previews: PreviewProvider {
                 .border(.red)
             }
             .previewDisplayName("Bottom Trailing Random sizes")
+        }
+        Group {
+            // MARK: - Center alignment
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .center, spacing: 7) {
+                    ForEach(PreviewData.tags) { tag in
+                        TagView(tag: tag)
+                            .border(.teal, width: 4)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Center Shuffled")
+
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .center, spacing: 7) {
+                    ForEach(0..<20) { _ in
+                        Color.rainbow.random()
+                            .frame(width: .random(in: 40...200).rounded(),
+                                   height: .random(in: 30...90).rounded())
+                            .border(.teal, width: 4)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Center Random sizes")
         }
     }
 }
