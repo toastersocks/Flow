@@ -116,18 +116,35 @@ public struct Flow: Layout {
                     currentPoint.x = bounds.minX + unusedHorizontalSpace
                 case .center:
                     currentPoint.x = bounds.minX + unusedHorizontalSpace * 0.5
+                case .centerDistribute:
+                    if unusedHorizontalSpace > spacing * 2 {
+                        let distributedUnusedHorizontalSpace = (unusedHorizontalSpace - spacing * 2) / CGFloat(rowSubviews.count + 1)
+                        currentPoint.x += distributedUnusedHorizontalSpace + spacing
+                    } else {
+                        currentPoint.x = bounds.minX + min(unusedHorizontalSpace * 0.5, spacing)
+                    }
+
                 }
                 for rowSubview in rowSubviews {
-                    if alignment == .center {
+                    if alignment == .center || alignment == .centerDistribute {
                         currentPoint.y += (totalRowHeight - rowSubview.height) * 0.5
                     }
 
                     place(size: rowSubview, at: currentPoint, anchor: subviewAnchor)
-                    currentPoint.x += rowSubview.width + spacing
 
-                    if alignment == .center {
+                    if alignment == .center || alignment == .centerDistribute  {
                         currentPoint.y -= (totalRowHeight - rowSubview.height) * 0.5
                     }
+
+                    let horizontalSpacing: CGFloat
+                    if alignment == .centerDistribute && unusedHorizontalSpace > spacing * 2 {
+                        let distributedUnusedHorizontalSpace = (unusedHorizontalSpace - spacing * 2) / CGFloat(rowSubviews.count + 1)
+                        horizontalSpacing = distributedUnusedHorizontalSpace + spacing
+                    } else {
+                        horizontalSpacing = spacing
+                    }
+
+                    currentPoint.x += rowSubview.width + horizontalSpacing
                 }
                 currentPoint.x = bounds.minX
                 currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing
@@ -146,7 +163,7 @@ public struct Flow: Layout {
                     case .topTrailing:
                         let unusedHorizontalSpace = bounds.maxX - currentViewSize.width
                         currentPoint.x = bounds.minX + unusedHorizontalSpace
-                    case .center:
+                    case .center, .centerDistribute:
                         let unusedHorizontalSpace = bounds.maxX - currentViewSize.width
                         currentPoint.x = bounds.minX + unusedHorizontalSpace * 0.5
                     }
@@ -177,6 +194,7 @@ public struct Flow: Layout {
         case bottomLeading
         case bottomTrailing
         case center
+        case centerDistribute
     }
 }
 
@@ -354,6 +372,37 @@ struct Flow_Previews: PreviewProvider {
                 .border(.red)
             }
             .previewDisplayName("Center Random sizes")
+        }
+
+        Group {
+            // MARK: - Distribute alignment
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .centerDistribute, spacing: 7) {
+                    ForEach(PreviewData.tags) { tag in
+                        TagView(tag: tag)
+                            .border(.teal, width: 4)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Distribute Shuffled")
+
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .centerDistribute, spacing: 7) {
+                    ForEach(0..<20) { _ in
+                        Color.rainbow.random()
+                            .frame(width: .random(in: 40...200).rounded(),
+                                   height: .random(in: 30...90).rounded())
+                            .border(.teal, width: 4)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Distribute Random sizes")
         }
     }
 }
