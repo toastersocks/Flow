@@ -7,6 +7,11 @@
 
 A layout for placing views in a flow-like arrangement in SwiftUI. A `Flow` organizes views sequentially, wrapping them onto new lines when the current line is filled. The alignment and spacing between views can be customized. Flow layouts are commonly used to display a set of tags.
 
+![Alt text](images/flow-tags-1.png)
+![Alt text](images/flow-tags-2.png)
+![Alt text](images/flow-vid-1.apng)
+![Alt text](images/flow-vid-2.apng)
+
 Using `Flow` is similar to using SwiftUI's VStack and HStack layouts/views.
 Alignment and spacing changes can be animated and since Flow conforms to the `Layout` protocol you can even animate changing to an entirely different layout type!
 
@@ -19,7 +24,7 @@ struct ContentView: View {
     @State var tags: [Tag]
 
     var body: some View {
-        FlowLayout(alignment: .topLeading, spacing: 10) {
+        FlowLayout(alignment: .topLeading, spacing: 7) {
             ForEach(tags) { tag in
                 TagView(tag)
             }
