@@ -3,6 +3,12 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftoastersocks%2FFlow%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/toastersocks/Flow)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftoastersocks%2FFlow%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/toastersocks/Flow)
 
+![](https://img.shields.io/badge/iOS-16+-blue)
+![](https://img.shields.io/badge/macOS-13+-blue)
+![](https://img.shields.io/badge/visionOS-17+-blue)
+![](https://img.shields.io/badge/tvOS-16+-blue)
+![](https://img.shields.io/badge/watchOS-9+-blue)
+
 ---
 
 A layout for placing views in a flow-like arrangement in SwiftUI. A `Flow` organizes views sequentially, wrapping them onto new lines when the current line is filled. The alignment and spacing between views can be customized. Flow layouts are commonly used to display a set of tags.
