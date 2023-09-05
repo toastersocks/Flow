@@ -230,7 +230,19 @@ struct Flow_Previews: PreviewProvider {
         }
         .previewDisplayName("Leading Shuffled")
 
-        // MARK: - Wrong frame size returned by sizeThatFits corner case 2
+        VStack(alignment: .leading, spacing: 0) {
+            Color.clear //This makes the previews align to the leading edge
+                .frame(maxHeight: 0)
+            Flow(alignment: .topLeading, spacing: 7) {
+                ForEach(PreviewData.cornerCase1) { tag in
+                    TagView(tag: tag)
+                        .border(.teal, width: 4)
+                }
+            }
+            .border(.red)
+        }
+        .previewDisplayName("Leading Corner Case 1")
+
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
                 .frame(maxHeight: 0)
@@ -274,7 +286,19 @@ struct Flow_Previews: PreviewProvider {
         }
         .previewDisplayName("Trailing Shuffled")
 
-        // MARK: - Wrong frame size returned by sizeThatFits corner case 2
+        VStack(alignment: .leading, spacing: 0) {
+            Color.clear //This makes the previews align to the leading edge
+                .frame(maxHeight: 0)
+            Flow(alignment: .topTrailing, spacing: 7) {
+                ForEach(PreviewData.cornerCase1) { tag in
+                    TagView(tag: tag)
+                        .border(.teal, width: 4)
+                }
+            }
+            .border(.red)
+        }
+        .previewDisplayName("Trailing Corner Case 1")
+
         VStack(alignment: .leading, spacing: 0) {
             Color.clear //This makes the previews align to the leading edge
                 .frame(maxHeight: 0)
@@ -318,7 +342,19 @@ struct Flow_Previews: PreviewProvider {
             }
             .previewDisplayName("Bottom Trailing Shuffled")
 
-            // MARK: - Wrong frame size returned by sizeThatFits corner case 2
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .bottomTrailing, spacing: 7) {
+                    ForEach(PreviewData.cornerCase1) { tag in
+                        TagView(tag: tag)
+                            .border(.teal, width: 4)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Bottom Trailing Corner Case 1")
+
             VStack(alignment: .leading, spacing: 0) {
                 Color.clear //This makes the previews align to the leading edge
                     .frame(maxHeight: 0)
@@ -377,7 +413,12 @@ struct Flow_Previews: PreviewProvider {
             }
             .previewDisplayName("Center Random sizes")
         }
+    }
+}
 
+/// NOTE: Xcode won't display more than 15 previews in a single preview struct so we create another preview struct to show the rest.
+struct Flow_Previews2: PreviewProvider {
+    static var previews: some View {
         Group {
             // MARK: - Distribute alignment
             VStack(alignment: .leading, spacing: 0) {
