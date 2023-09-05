@@ -119,7 +119,15 @@ extension Color {
         var b: CGFloat = 0
         var o: CGFloat = 0
 
-        NativeColor(self).getRed(&r, green: &g, blue: &b, alpha: &o)
+        let nativeColor: NativeColor
+        #if canImport(UIKit)
+        nativeColor = NativeColor(self)
+        #elseif canImport(AppKit)
+        nativeColor = NativeColor(self).usingColorSpace(.deviceRGB) ?? NativeColor(self)
+        #endif
+
+
+        nativeColor.getRed(&r, green: &g, blue: &b, alpha: &o)
 
         return (r, g, b, o)
     }
