@@ -4,7 +4,9 @@ import SwiftUI
 
 /// A Flow layout arranges its subviews in a line, wrapping at the edge and starting new lines as needed, similar to how words wrap in a paragraph.
 public struct Flow: Layout {
+    /// The alignment of the subviews within the container.
     let alignment: Alignment
+    /// The space between subviews.
     let spacing: CGFloat
 
 
@@ -59,7 +61,8 @@ public struct Flow: Layout {
 
         return CGSize(width: maxX, height: maxY)
     }
-
+    /// Returns the size that fits the subviews within the proposed size. Fulfills [SwiftUI.Layout](https://developer.apple.com/documentation/swiftui/layout) protocol requirements. See [`sizeThatFits(proposal:subviews:cache)`](https://developer.apple.com/documentation/swiftui/layout/sizethatfits(proposal:subviews:cache:)) for more info.
+    @_documentation(visibility: internal)
     public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         sizeThatFits(proposal: proposal, subviewSizes: subviews.map { $0.sizeThatFits(.unspecified) })
     }
@@ -181,6 +184,8 @@ public struct Flow: Layout {
         return viewRects
     }
 
+    /// Places the subviews of the layout. Fulfills [`SwiftUI.Layout`](https://developer.apple.com/documentation/swiftui/layout) protocol requirements. See [`placeSubviews(in:proposal:subviews:cache:)`](https://developer.apple.com/documentation/swiftui/layout/placeSubviews(in:proposal:subviews:cache:)) for more info.
+    @_documentation(visibility: internal)
     public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         let viewRects = getRects(for: subviews.map { $0.sizeThatFits(.unspecified) },
                               in: bounds)
@@ -190,15 +195,21 @@ public struct Flow: Layout {
         }
     }
 
-
     /// The alignment of subviews within the flow.
     public enum Alignment: CaseIterable {
+        /// Aligns the tops of subviews within a row. Rows are flush with the leading edge of the container.
         case topLeading
+        /// Aligns the tops of subviews within a row. Rows are flush with the trailing edge of the container.
         case topTrailing
+        /// Aligns the bottoms of subviews within a row. Rows are flush with the leading edge of the container.
         case bottomLeading
+        /// Aligns the bottoms of subviews within a row. Rows are flush with the trailing edge of the container.
         case bottomTrailing
+        /// Centers subviews horizontally within a row. Rows are centered within the container. Extra space is added equally before the first subview and after the last.
         case center
+        /// Centers subviews horizontally within a row. Rows are centered within the container. Extra space is first added equally before the first and after the last subviews up to the spacing amount, then distributed evenly between and around the subviews.
         case centerDistribute
+        /// Aligns the horizontal centers of subviews within a row. The first subview aligns with the leading edge and the last subview aligns with the trailing edge of the container. Extra space is distributed evenly between subviews. This is similar to how justified text is laid out in a paragraph.
         case centerJustify
     }
 }
