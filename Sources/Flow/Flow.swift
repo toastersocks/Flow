@@ -106,7 +106,7 @@ public struct Flow: Layout {
                     currentPoint.y += totalRowHeight
                     subviewAnchor = .bottomLeading
                     fallthrough
-                case .topLeading:
+                case .topLeading, .centerJustify:
                     currentPoint.x = bounds.minX
                 case .bottomTrailing:
                     currentPoint.y += totalRowHeight
@@ -123,24 +123,28 @@ public struct Flow: Layout {
                     } else {
                         currentPoint.x = bounds.minX + min(unusedHorizontalSpace * 0.5, spacing)
                     }
-
                 }
+
                 for rowSubview in rowSubviews {
-                    if alignment == .center || alignment == .centerDistribute {
+                    if alignment == .center || alignment == .centerDistribute || alignment == .centerJustify {
                         currentPoint.y += (totalRowHeight - rowSubview.height) * 0.5
                     }
 
                     place(size: rowSubview, at: currentPoint, anchor: subviewAnchor)
 
-                    if alignment == .center || alignment == .centerDistribute  {
+                    if alignment == .center || alignment == .centerDistribute || alignment == .centerJustify  {
                         currentPoint.y -= (totalRowHeight - rowSubview.height) * 0.5
                     }
 
                     let horizontalSpacing: CGFloat
-                    if alignment == .centerDistribute && unusedHorizontalSpace > spacing * 2 {
+
+                    switch alignment {
+                    case .centerDistribute where unusedHorizontalSpace > spacing * 2:
                         let distributedUnusedHorizontalSpace = (unusedHorizontalSpace - spacing * 2) / CGFloat(rowSubviews.count + 1)
                         horizontalSpacing = distributedUnusedHorizontalSpace + spacing
-                    } else {
+                    case .centerJustify:
+                        horizontalSpacing = spacing + unusedHorizontalSpace / CGFloat(rowSubviews.count - 1)
+                    default:
                         horizontalSpacing = spacing
                     }
 
@@ -155,7 +159,7 @@ public struct Flow: Layout {
                     case .bottomLeading:
                         currentPoint.y += currentViewSize.height
                         fallthrough
-                    case .topLeading:
+                    case .topLeading, .centerJustify:
                         currentPoint.x = bounds.minX
                     case .bottomTrailing:
                         currentPoint.y += currentViewSize.height
@@ -195,6 +199,7 @@ public struct Flow: Layout {
         case bottomTrailing
         case center
         case centerDistribute
+        case centerJustify
     }
 }
 
@@ -391,6 +396,37 @@ struct Flow_Previews: PreviewProvider {
                 .border(.red)
             }
             .previewDisplayName("Distribute Random sizes")
+        }
+
+        Group {
+            // MARK: - Justify alignment
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .centerJustify, spacing: 7) {
+                    ForEach(PreviewData.tags) { tag in
+                        TagView(tag: tag)
+                            .border(.teal, width: 4)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Justify Shuffled")
+
+            VStack(alignment: .leading, spacing: 0) {
+                Color.clear //This makes the previews align to the leading edge
+                    .frame(maxHeight: 0)
+                Flow(alignment: .centerJustify, spacing: 7) {
+                    ForEach(0..<20) { _ in
+                        Color.rainbow.random()
+                            .frame(width: .random(in: 40...200).rounded(),
+                                   height: .random(in: 30...90).rounded())
+                            .border(.teal, width: 4)
+                    }
+                }
+                .border(.red)
+            }
+            .previewDisplayName("Justify Random sizes")
         }
     }
 }
