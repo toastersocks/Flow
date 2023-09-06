@@ -15,8 +15,8 @@ A layout for placing views in a flow-like arrangement in SwiftUI. A `Flow` organ
 
 ![Left-aligned tags.](images/flow-tags-1.png)
 ![Right-aligned tags.](images/flow-tags-2.png)
-![Multi-colored rectangles languidly animating between different alignments.](images/flow-vid-1.apng)
-![Multi-colored rectangles bordered in teal enthusiastically and jauntily animating between different alignments.](images/flow-vid-2.apng)
+![Multi-colored rectangles languidly animating between different alignments.](images/flow-vid-1.png)
+![Multi-colored rectangles bordered in teal enthusiastically and jauntily animating between different alignments.](images/flow-vid-2.png)
 
 Using `Flow` is similar to using SwiftUI's VStack and HStack layouts/views.
 Alignment and spacing changes can be animated and since Flow conforms to the `Layout` protocol you can even animate changing to an entirely different layout type!
