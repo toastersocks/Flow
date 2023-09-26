@@ -15,7 +15,7 @@ extension CGFloat {
     }
 
     func isNearlyEqual(to other: Self) -> Bool {
-        isEqual(to: other, tolerance: 0.000000000001)
+        isEqual(to: other, tolerance: 0.00000000001)
     }
 }
 
