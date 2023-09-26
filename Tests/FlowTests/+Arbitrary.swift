@@ -7,6 +7,8 @@
 
 import CoreGraphics
 import SwiftCheck
+@testable import Flow
+
 
 extension CGSize: Arbitrary {
     public static var arbitrary: Gen<CGSize> {
@@ -14,5 +16,22 @@ extension CGSize: Arbitrary {
             CGSize(width: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 410 }),
                    height: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 1000 }))
         }
+    }
+}
+
+extension MockLayoutSubview: Arbitrary {
+    public static var arbitrary: Gen<MockLayoutSubview> {
+        Gen<MockLayoutSubview>.compose { composer in
+            MockLayoutSubview(spacing: MockViewSpacing(),
+                              priority: 0,
+                              width: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 410 }),
+                              height: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 1000 }))
+        }
+    }
+}
+
+extension Flow.Alignment: Arbitrary {
+    public static var arbitrary: Gen<Flow.Alignment> {
+        Gen<Flow.Alignment>.fromElements(of: [.topLeading, .topTrailing, .bottomLeading, .bottomTrailing, .center, .centerJustify, .centerDistribute])
     }
 }

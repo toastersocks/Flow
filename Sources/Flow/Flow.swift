@@ -73,10 +73,11 @@ public struct Flow: Layout {
     ///   - bounds: The bounds in which to place the sizes.
     ///   - sizes: An array of sizes for which to calculate placement.
     /// - Returns: An array of `CGRect` representing the placed sizes. The origins of the rects are normalized to the top-left of the rects. The bounding box encompassing the full extents of the rects can be found by performing a union of all the rects.
-    func getRects(for sizes: [CGSize], in bounds: CGRect) -> [CGRect] {
+    func getRects<LayoutSubviewType: LayoutSubviewProtocol>(for subviews: [LayoutSubviewType], in bounds: CGRect) -> [CGRect] {
         var viewRects: [CGRect] = []
 
-        func place(size: CGSize, at point: CGPoint, anchor: UnitPoint) {
+        func place(view: some LayoutSubviewProtocol, at point: CGPoint, anchor: UnitPoint) {
+            let size = view.sizeThatFits(.unspecified)
             let topLeft = CGPoint(x: point.x - size.width * anchor.x, y: point.y - size.height * anchor.y)
             let normalizedRect = CGRect(origin: topLeft, size: size)
 
@@ -84,26 +85,26 @@ public struct Flow: Layout {
         }
 
         var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
-        var rowSubviews: [CGSize] = []
+        var rowSubviews = Row<LayoutSubviewType>(spacing: spacing)
 
-        for (subviewIndex, currentViewSize) in sizes.enumerated() {
-            let currentRowWidth = rowSubviews.map { $0.width }.reduce(0, +) + spacing * CGFloat(rowSubviews.count - 1)
-            let currentRowHeight = rowSubviews.map { $0.height }.max() ?? 0
-            let rowBoundsDifference = currentPoint.x + currentRowWidth + spacing + currentViewSize.width - bounds.maxX
+        for (subviewIndex, currentSubview) in subviews.enumerated() {
+            let currentViewSize = currentSubview.sizeThatFits(.unspecified)
+            let rowBoundsDifference = currentPoint.x + rowSubviews.minimumWidth(withView: currentSubview) - bounds.maxX
 
             let wouldOverflow = rowBoundsDifference > 0.000_000_000_001
-            let isLast = subviewIndex == sizes.indices.last
+            let isLast = subviewIndex == subviews.indices.last
 
             if wouldOverflow || isLast {
-                let totalRowWidth = currentRowWidth + (wouldOverflow ? 0 : currentViewSize.width + spacing)
-                let totalRowHeight = max(currentRowHeight, wouldOverflow ? 0 : currentViewSize.height)
-
                 if !wouldOverflow {
-                    rowSubviews.append(currentViewSize)
+                    rowSubviews.append(currentSubview)
                 }
+
+                let totalRowWidth = rowSubviews.minimumWidth()
+                let totalRowHeight = rowSubviews.maxHeight()
 
                 let unusedHorizontalSpace = bounds.maxX - totalRowWidth
                 var subviewAnchor: UnitPoint = .topLeading
+                
                 switch alignment {
                 case .bottomLeading:
                     currentPoint.y += totalRowHeight
@@ -120,6 +121,7 @@ public struct Flow: Layout {
                 case .center:
                     currentPoint.x = bounds.minX + unusedHorizontalSpace * 0.5
                 case .centerDistribute:
+                    let spacing = rowSubviews.averageSpacing()
                     if unusedHorizontalSpace > spacing * 2 {
                         let distributedUnusedHorizontalSpace = (unusedHorizontalSpace - spacing * 2) / CGFloat(rowSubviews.count + 1)
                         currentPoint.x += distributedUnusedHorizontalSpace + spacing
@@ -128,18 +130,20 @@ public struct Flow: Layout {
                     }
                 }
 
-                for rowSubview in rowSubviews {
+                for rowSubview in rowSubviews.views {
                     if alignment == .center || alignment == .centerDistribute || alignment == .centerJustify {
-                        currentPoint.y += (totalRowHeight - rowSubview.height) * 0.5
+                        currentPoint.y += (totalRowHeight - rowSubview.sizeThatFits(.unspecified).height) * 0.5
                     }
 
-                    place(size: rowSubview, at: currentPoint, anchor: subviewAnchor)
+                    place(view: rowSubview, at: currentPoint, anchor: subviewAnchor)
 
                     if alignment == .center || alignment == .centerDistribute || alignment == .centerJustify  {
-                        currentPoint.y -= (totalRowHeight - rowSubview.height) * 0.5
+                        currentPoint.y -= (totalRowHeight - rowSubview.sizeThatFits(.unspecified).height) * 0.5
                     }
 
                     let horizontalSpacing: CGFloat
+
+                    let spacing = rowSubviews.averageSpacing()
 
                     switch alignment {
                     case .centerDistribute where unusedHorizontalSpace > spacing * 2:
@@ -151,11 +155,13 @@ public struct Flow: Layout {
                         horizontalSpacing = spacing
                     }
 
-                    currentPoint.x += rowSubview.width + horizontalSpacing
+                    currentPoint.x += rowSubview.sizeThatFits(.unspecified).width + horizontalSpacing
                 }
+
                 currentPoint.x = bounds.minX
-                currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing
-                rowSubviews = [currentViewSize]
+                // !!!: Do something intelligent to get the vertical spacing to the next row...
+                currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing // <- here
+                rowSubviews = Row(views: [currentSubview], spacing: spacing)
 
                 if isLast && wouldOverflow {
                     switch alignment {
@@ -174,10 +180,10 @@ public struct Flow: Layout {
                         let unusedHorizontalSpace = bounds.maxX - currentViewSize.width
                         currentPoint.x = bounds.minX + unusedHorizontalSpace * 0.5
                     }
-                    place(size: currentViewSize, at: currentPoint, anchor: subviewAnchor)
+                    place(view: currentSubview, at: currentPoint, anchor: subviewAnchor)
                 }
             } else {
-                rowSubviews.append(currentViewSize)
+                rowSubviews.append(currentSubview)
             }
         }
 
@@ -187,7 +193,7 @@ public struct Flow: Layout {
     /// Places the subviews of the layout. Fulfills [`SwiftUI.Layout`](https://developer.apple.com/documentation/swiftui/layout) protocol requirements. See [`placeSubviews(in:proposal:subviews:cache:)`](https://developer.apple.com/documentation/swiftui/layout/placeSubviews(in:proposal:subviews:cache:)) for more info.
     @_documentation(visibility: internal)
     public func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let viewRects = getRects(for: subviews.map { $0.sizeThatFits(.unspecified) },
+        let viewRects = getRects(for: subviews.map { $0 },
                               in: bounds)
 
         for (subview, rect) in zip(subviews, viewRects) {
