@@ -88,22 +88,22 @@ public struct Flow: Layout {
         }
 
         var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
-        var rowSubviews = Row<LayoutSubviewType>(spacing: spacing)
+        var currentRow = Row<LayoutSubviewType>(spacing: spacing)
 
         for (subviewIndex, currentSubview) in subviews.enumerated() {
             let currentViewSize = currentSubview.sizeThatFits(.unspecified)
-            let rowBoundsDifference = currentPoint.x + rowSubviews.minimumWidth(withView: currentSubview) - bounds.maxX
+            let rowBoundsDifference = currentPoint.x + currentRow.minimumWidth(withView: currentSubview) - bounds.maxX
 
             let wouldOverflow = rowBoundsDifference > 0.000_000_000_001
             let isLast = subviewIndex == subviews.indices.last
 
             if wouldOverflow || isLast {
                 if !wouldOverflow {
-                    rowSubviews.append(currentSubview)
+                    currentRow.append(currentSubview)
                 }
 
-                let totalRowWidth = rowSubviews.minimumWidth()
-                let totalRowHeight = rowSubviews.maxHeight()
+                let totalRowWidth = currentRow.minimumWidth()
+                let totalRowHeight = currentRow.maxHeight()
 
                 let unusedHorizontalSpace = bounds.maxX - totalRowWidth
                 var subviewAnchor: UnitPoint = .topLeading
@@ -124,16 +124,16 @@ public struct Flow: Layout {
                 case .center:
                     currentPoint.x = bounds.minX + unusedHorizontalSpace * 0.5
                 case .centerDistribute:
-                    let spacing = rowSubviews.averageSpacing()
+                    let spacing = currentRow.averageSpacing()
                     if unusedHorizontalSpace > spacing * 2 {
-                        let distributedUnusedHorizontalSpace = (unusedHorizontalSpace - spacing * 2) / CGFloat(rowSubviews.count + 1)
+                        let distributedUnusedHorizontalSpace = (unusedHorizontalSpace - spacing * 2) / CGFloat(currentRow.count + 1)
                         currentPoint.x += distributedUnusedHorizontalSpace + spacing
                     } else {
                         currentPoint.x = bounds.minX + min(unusedHorizontalSpace * 0.5, spacing)
                     }
                 }
 
-                for rowSubview in rowSubviews.views {
+                for rowSubview in currentRow.views {
                     if alignment == .center || alignment == .centerDistribute || alignment == .centerJustify {
                         currentPoint.y += (totalRowHeight - rowSubview.sizeThatFits(.unspecified).height) * 0.5
                     }
@@ -146,14 +146,14 @@ public struct Flow: Layout {
 
                     let horizontalSpacing: CGFloat
 
-                    let spacing = rowSubviews.averageSpacing()
+                    let spacing = currentRow.averageSpacing()
 
                     switch alignment {
                     case .centerDistribute where unusedHorizontalSpace > spacing * 2:
-                        let distributedUnusedHorizontalSpace = (unusedHorizontalSpace - spacing * 2) / CGFloat(rowSubviews.count + 1)
+                        let distributedUnusedHorizontalSpace = (unusedHorizontalSpace - spacing * 2) / CGFloat(currentRow.count + 1)
                         horizontalSpacing = distributedUnusedHorizontalSpace + spacing
                     case .centerJustify:
-                        horizontalSpacing = spacing + unusedHorizontalSpace / CGFloat(rowSubviews.count - 1)
+                        horizontalSpacing = spacing + unusedHorizontalSpace / CGFloat(currentRow.count - 1)
                     default:
                         horizontalSpacing = spacing
                     }
@@ -164,7 +164,7 @@ public struct Flow: Layout {
                 currentPoint.x = bounds.minX
                 // !!!: Do something intelligent to get the vertical spacing to the next row...
                 currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing // <- here
-                rowSubviews = Row(views: [currentSubview], spacing: spacing)
+                currentRow = Row(views: [currentSubview], spacing: spacing)
 
                 if isLast && wouldOverflow {
                     switch alignment {
@@ -186,7 +186,7 @@ public struct Flow: Layout {
                     place(view: currentSubview, at: currentPoint, anchor: subviewAnchor)
                 }
             } else {
-                rowSubviews.append(currentSubview)
+                currentRow.append(currentSubview)
             }
         }
 
