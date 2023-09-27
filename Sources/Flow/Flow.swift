@@ -24,47 +24,50 @@ public struct Flow: Layout {
     ///   - proposal: The proposed size offered to place views.
     ///   - subviewSizes: An array of sizes for which to calculate the bounding box.
     /// - Returns: A `CGSize` representing the bounding box containing the placed sizes.
-    func sizeThatFits(proposal: ProposedViewSize, subviewSizes: [CGSize]) -> CGSize {
-        let totalChildWidthWithSpacing = subviewSizes.map(\.width).reduce(0, +) + (spacing * CGFloat(subviewSizes.count - 1))
+    func sizeThatFits<LayoutSubviewType: LayoutSubviewProtocol>(proposal: ProposedViewSize, subviews: [LayoutSubviewType]) -> CGSize {
+        if proposal.width == .infinity, proposal.height == .infinity {
+            return CGSize(width: CGFloat.infinity, height: CGFloat.infinity)
+        }
 
-        let minimumParentWidth = subviewSizes.map(\.width).max() ?? 0
+        let totalChildWidthWithSpacing = Row(views: subviews, spacing: spacing).minimumWidth()
+
+        let minimumParentWidth = subviews.map { $0.sizeThatFits(.unspecified).width }.max() ?? 0
 
         let boundsWidth = max(proposal.width ?? totalChildWidthWithSpacing, minimumParentWidth)
 
         var currentPoint = CGPoint(x: 0, y: 0)
-        var currentRowMaxHeight: CGFloat = 0
 
         var maxX: CGFloat = 0
         var maxY: CGFloat = 0
 
-        for currentViewSize in subviewSizes {
-            if currentPoint.x > 0 {
-                currentPoint.x += spacing
-            }
+        var currentRow = Row<LayoutSubviewType>(views: [], spacing: spacing)
 
-            let rowBoundsDifference = currentPoint.x + currentViewSize.width - boundsWidth
+        for currentSubview in subviews {
+            let rowBoundsDifference = currentRow.minimumWidth(withView: currentSubview) - boundsWidth
             let wouldOverflow = rowBoundsDifference > 0.000_000_000_001
 
             if wouldOverflow {
-                currentPoint.x = 0
-                currentPoint.y += spacing + currentRowMaxHeight
-                currentRowMaxHeight = 0
+                maxX = max(maxX, currentRow.minimumWidth())
+                // !!!: Do something smarter about figuring out the vertical spacing between this row and the next.
+                currentPoint.y += currentRow.averageSpacing() + currentRow.maxHeight()
+
+                currentRow = Row(views: [currentSubview], spacing: spacing)
+
+            } else {
+                currentRow.append(currentSubview)
             }
-
-            currentRowMaxHeight = max(currentRowMaxHeight, currentViewSize.height)
-
-            currentPoint.x += currentViewSize.width
-
-            maxX = max(maxX, currentPoint.x)
-            maxY = max(maxY, currentPoint.y + currentViewSize.height)
+            maxX = max(maxX, currentRow.minimumWidth())
+            maxY = max(maxY, currentPoint.y + currentRow.maxHeight())
         }
 
-        return CGSize(width: maxX, height: maxY)
+        let idealSize = CGSize(width: maxX, height: maxY)
+
+        return idealSize
     }
     /// Returns the size that fits the subviews within the proposed size. Fulfills [SwiftUI.Layout](https://developer.apple.com/documentation/swiftui/layout) protocol requirements. See [`sizeThatFits(proposal:subviews:cache)`](https://developer.apple.com/documentation/swiftui/layout/sizethatfits(proposal:subviews:cache:)) for more info.
     @_documentation(visibility: internal)
     public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        sizeThatFits(proposal: proposal, subviewSizes: subviews.map { $0.sizeThatFits(.unspecified) })
+        sizeThatFits(proposal: proposal, subviews: subviews.map { $0 })
     }
 
 
@@ -104,7 +107,7 @@ public struct Flow: Layout {
 
                 let unusedHorizontalSpace = bounds.maxX - totalRowWidth
                 var subviewAnchor: UnitPoint = .topLeading
-                
+
                 switch alignment {
                 case .bottomLeading:
                     currentPoint.y += totalRowHeight
