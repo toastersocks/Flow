@@ -228,271 +228,295 @@ public struct Flow: Layout {
     }
 }
 
-struct Flow_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(spacing: 7) {
-                    ForEach(PreviewData.tags) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Leading Shuffled")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .topLeading, spacing: 7) {
-                    ForEach(PreviewData.cornerCase1) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Leading Corner Case 1")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(spacing: 7) {
-                    ForEach(PreviewData.cornerCase2) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Leading Corner Case 2")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(spacing: 7) {
-                    ForEach(0..<20) { _ in
-                        Color.rainbow.random()
-                            .frame(width: .random(in: 40...200).rounded(),
-                                   height: .random(in: 30...90).rounded())
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Leading Random sizes")
-        }
-        Group {
-            // MARK: - Trailing
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .topTrailing, spacing: 7) {
-                    ForEach(PreviewData.tags) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Trailing Shuffled")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .topTrailing, spacing: 7) {
-                    ForEach(PreviewData.cornerCase1) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Trailing Corner Case 1")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .topTrailing, spacing: 7) {
-                    ForEach(PreviewData.cornerCase2) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Trailing Corner Case 2")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .topTrailing, spacing: 7) {
-                    ForEach(0..<20) { _ in
-                        Color.rainbow.random()
-                            .frame(width: .random(in: 40...200).rounded(),
-                                   height: .random(in: 30...90).rounded())
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Trailing Random sizes")
-        }
-        Group {
-            // MARK: - Bottom alignment
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .bottomTrailing, spacing: 7) {
-                    ForEach(PreviewData.tags) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Bottom Trailing Shuffled")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .bottomTrailing, spacing: 7) {
-                    ForEach(PreviewData.cornerCase1) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Bottom Trailing Corner Case 1")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .bottomTrailing, spacing: 7) {
-                    ForEach(PreviewData.cornerCase2) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Bottom Trailing Corner Case 2")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .bottomTrailing, spacing: 7) {
-                    ForEach(0..<20) { _ in
-                        Color.rainbow.random()
-                            .frame(width: .random(in: 40...200).rounded(),
-                                   height: .random(in: 30...90).rounded())
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Bottom Trailing Random sizes")
-        }
-        Group {
-            // MARK: - Center alignment
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .center, spacing: 7) {
-                    ForEach(PreviewData.tags) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Center Shuffled")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .center, spacing: 7) {
-                    ForEach(0..<20) { _ in
-                        Color.rainbow.random()
-                            .frame(width: .random(in: 40...200).rounded(),
-                                   height: .random(in: 30...90).rounded())
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Center Random sizes")
-        }
+extension CGSize: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(width)
+        hasher.combine(height)
     }
 }
 
-/// NOTE: Xcode won't display more than 15 previews in a single preview struct so we create another preview struct to show the rest.
-struct Flow_Previews2: PreviewProvider {
-    static var previews: some View {
-        Group {
-            // MARK: - Distribute alignment
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .centerDistribute, spacing: 7) {
-                    ForEach(PreviewData.tags) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
+#Preview("System Spacing") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow {
+            ForEach(0..<20) { _ in
+                Color.rainbow.random()
+                    .frame(width: .random(in: 40...200).rounded(),
+                           height: .random(in: 30...90).rounded())
+                    .border(.teal, width: 4)
             }
-            .previewDisplayName("Distribute Shuffled")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .centerDistribute, spacing: 7) {
-                    ForEach(0..<20) { _ in
-                        Color.rainbow.random()
-                            .frame(width: .random(in: 40...200).rounded(),
-                                   height: .random(in: 30...90).rounded())
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Distribute Random sizes")
         }
+        .border(.red)
+    }
+    .previewDisplayName("Trailing Random sizes")
+}
 
-        Group {
-            // MARK: - Justify alignment
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .centerJustify, spacing: 7) {
-                    ForEach(PreviewData.tags) { tag in
-                        TagView(tag: tag)
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
+#Preview("Leading Shuffled") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(spacing: 7) {
+            ForEach(PreviewData.tags) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
             }
-            .previewDisplayName("Justify Shuffled")
-
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear //This makes the previews align to the leading edge
-                    .frame(maxHeight: 0)
-                Flow(alignment: .centerJustify, spacing: 7) {
-                    ForEach(0..<20) { _ in
-                        Color.rainbow.random()
-                            .frame(width: .random(in: 40...200).rounded(),
-                                   height: .random(in: 30...90).rounded())
-                            .border(.teal, width: 4)
-                    }
-                }
-                .border(.red)
-            }
-            .previewDisplayName("Justify Random sizes")
         }
+        .border(.red)
+    }
+}
+
+#Preview("Leading Corner Case 1") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .topLeading, spacing: 7) {
+            ForEach(PreviewData.cornerCase1) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Leading Corner Case 2") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(spacing: 7) {
+            ForEach(PreviewData.cornerCase2) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Leading Random sizes") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(spacing: 7) {
+            ForEach(0..<20) { _ in
+                Color.rainbow.random()
+                    .frame(width: .random(in: 40...200).rounded(),
+                           height: .random(in: 30...90).rounded())
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Trailing Shuffled") {
+    // MARK: - Trailing
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .topTrailing, spacing: 7) {
+            ForEach(PreviewData.tags) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Trailing Corner Case 1") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .topTrailing, spacing: 7) {
+            ForEach(PreviewData.cornerCase1) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Trailing Corner Case 2") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .topTrailing, spacing: 7) {
+            ForEach(PreviewData.cornerCase2) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Trailing Random sizes") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .topTrailing, spacing: 7) {
+            ForEach(0..<20) { _ in
+                Color.rainbow.random()
+                    .frame(width: .random(in: 40...200).rounded(),
+                           height: .random(in: 30...90).rounded())
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Bottom Trailing Shuffled") {
+    // MARK: - Bottom alignment
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .bottomTrailing, spacing: 7) {
+            ForEach(PreviewData.tags) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Bottom Trailing Corner Case 1") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .bottomTrailing, spacing: 7) {
+            ForEach(PreviewData.cornerCase1) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Bottom Trailing Corner Case 2") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .bottomTrailing, spacing: 7) {
+            ForEach(PreviewData.cornerCase2) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Bottom Trailing Random sizes") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .bottomTrailing, spacing: 7) {
+            ForEach(0..<20) { _ in
+                Color.rainbow.random()
+                    .frame(width: .random(in: 40...200).rounded(),
+                           height: .random(in: 30...90).rounded())
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Center Shuffled") {
+    // MARK: - Center alignment
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .center, spacing: 7) {
+            ForEach(PreviewData.tags) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Center Random sizes") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .center, spacing: 7) {
+            ForEach(0..<20) { _ in
+                Color.rainbow.random()
+                    .frame(width: .random(in: 40...200).rounded(),
+                           height: .random(in: 30...90).rounded())
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Distribute Shuffled") {
+    // MARK: - Distribute alignment
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .centerDistribute, spacing: 7) {
+            ForEach(PreviewData.tags) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Distribute Random sizes") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .centerDistribute, spacing: 7) {
+            ForEach(0..<20) { _ in
+                Color.rainbow.random()
+                    .frame(width: .random(in: 40...200).rounded(),
+                           height: .random(in: 30...90).rounded())
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Justify Shuffled") {
+    // MARK: - Justify alignment
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .centerJustify, spacing: 7) {
+            ForEach(PreviewData.tags) { tag in
+                TagView(tag: tag)
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
+    }
+}
+
+#Preview("Justify Random sizes") {
+    VStack(alignment: .leading, spacing: 0) {
+        Color.clear //This makes the previews align to the leading edge
+            .frame(maxHeight: 0)
+        Flow(alignment: .centerJustify, spacing: 7) {
+            ForEach(0..<20) { _ in
+                Color.rainbow.random()
+                    .frame(width: .random(in: 40...200).rounded(),
+                           height: .random(in: 30...90).rounded())
+                    .border(.teal, width: 4)
+            }
+        }
+        .border(.red)
     }
 }
