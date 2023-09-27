@@ -9,28 +9,39 @@ import SwiftUI
 @testable import Flow
 
 
-struct MockViewSpacing: ViewSpacingProtocol {
-    var preferredHorizontalDistance = 7.0
-    var preferredVerticalDistance = 10.0
+struct MockViewSpacing: ViewSpacingProtocol, Hashable {
+    static var zero: MockViewSpacing { MockViewSpacing(horizontalSpacing: .zero, verticalSpacing: .zero) }
+    var horizontalSpacing = 7.0
+    var verticalSpacing = 10.0
+
+    init(horizontalSpacing: CGFloat, verticalSpacing: CGFloat) {
+        self.horizontalSpacing = horizontalSpacing
+        self.verticalSpacing = verticalSpacing
+    }
+
+    init() { }
 
     func distance(to next: Self, along axis: Axis) -> CGFloat {
         switch axis {
-        case .horizontal: max(preferredHorizontalDistance, next.preferredHorizontalDistance)
-        case .vertical: max(preferredVerticalDistance, next.preferredVerticalDistance)
+        case .horizontal: max(horizontalSpacing, next.horizontalSpacing)
+        case .vertical: max(verticalSpacing, next.verticalSpacing)
         }
     }
 
     mutating func formUnion(_ other: Self, edges: Edge.Set) {
         if edges.contains(.horizontal) {
-            preferredHorizontalDistance = max(preferredHorizontalDistance, other.preferredHorizontalDistance)
+            horizontalSpacing = max(horizontalSpacing, other.horizontalSpacing)
         }
         if edges.contains(.vertical) {
-            preferredVerticalDistance = max(preferredVerticalDistance, other.preferredVerticalDistance)
+            verticalSpacing = max(verticalSpacing, other.verticalSpacing)
         }
     }
 
     func union(_ other: Self, edges: Edge.Set) -> Self {
-        MockViewSpacing(preferredHorizontalDistance: edges.contains(.horizontal) ? max(preferredHorizontalDistance, other.preferredHorizontalDistance) : preferredHorizontalDistance, preferredVerticalDistance: edges.contains(.vertical) ? max(preferredVerticalDistance, other.preferredVerticalDistance) : preferredVerticalDistance)
+        let containsHorizontal = edges.contains(.horizontal) || edges.contains(.leading) || edges.contains(.trailing) || edges.contains(.all)
+        let containsVertical = edges.contains(.vertical) || edges.contains(.top) || edges.contains(.bottom) || edges.contains(.all)
+
+        return MockViewSpacing(horizontalSpacing: containsHorizontal ? max(horizontalSpacing, other.horizontalSpacing) : horizontalSpacing, verticalSpacing: containsVertical ? max(verticalSpacing, other.verticalSpacing) : verticalSpacing)
     }
 }
 

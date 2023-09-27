@@ -19,6 +19,14 @@ extension CGSize: Arbitrary {
     }
 }
 
+extension CGFloat: Arbitrary {
+    public static var arbitrary: Gen<CGFloat> {
+        Gen<CGFloat>.compose { composer in
+            CGFloat(Double.arbitrary.generate)
+        }
+    }
+}
+
 extension MockLayoutSubview: Arbitrary {
     public static var arbitrary: Gen<MockLayoutSubview> {
         Gen<MockLayoutSubview>.compose { composer in

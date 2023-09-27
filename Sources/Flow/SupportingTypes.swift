@@ -9,6 +9,8 @@ import SwiftUI
 
 
 protocol ViewSpacingProtocol {
+    static var zero: Self { get }
+    init()
     func distance(to next: Self, along axis: Axis) -> CGFloat
     mutating func formUnion(_ other: Self, edges: Edge.Set)
     func union(_ other: Self, edges: Edge.Set) -> Self
@@ -45,7 +47,7 @@ extension LayoutSubview: LayoutSubviewProtocol { }
 
 struct Row<LayoutSubviewType: LayoutSubviewProtocol> {
     var views: [LayoutSubviewType] = []
-    var spacing: Double? = nil
+    var spacing: CGFloat? = nil
 
     var count: Int {
         views.count
@@ -92,16 +94,35 @@ struct Row<LayoutSubviewType: LayoutSubviewProtocol> {
         maxHeight(of: views + [view])
     }
 
+    func tallestView() -> LayoutSubviewType? {
+        guard views.isEmpty == false else { return nil }
+        if views.count == 1 { return views.first }
+
+        return views.dropFirst().reduce(views[0]) { tallest, view in
+            view.sizeThatFits(.unspecified).height > tallest.sizeThatFits(.unspecified).height ? view : tallest
+        }
+    }
+
     func averageSpacing() -> Double {
         if let spacing { return spacing } // guard
         guard views.isEmpty == false else { return 0 }
 
         let adjacentPairs = zip(views, views.lazy.dropFirst())
 
-        return adjacentPairs.map { view1, view2 in
+        let spacings = adjacentPairs.map { view1, view2 in
             view1.spacing.distance(to: view2.spacing, along: .horizontal)
         }
-        .reduce(0, +) / Double(views.count)
+
+        return spacings.reduce(0, +) / Double(spacings.count)
+    }
+
+    func spacing(to row: Self) -> Double {
+        if let spacing { return spacing }
+
+        guard let thisTallest = tallestView(),
+              let otherTallest = row.tallestView() else { return 0 }
+
+        return thisTallest.spacing.distance(to: otherTallest.spacing, along: .horizontal)
     }
 
     mutating func append(_ view: LayoutSubviewType) {

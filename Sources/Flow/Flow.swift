@@ -1,20 +1,19 @@
 import SwiftUI
 
 
-
 /// A Flow layout arranges its subviews in a line, wrapping at the edge and starting new lines as needed, similar to how words wrap in a paragraph.
 public struct Flow: Layout {
     /// The alignment of the subviews within the container.
     let alignment: Alignment
     /// The space between subviews.
-    let spacing: CGFloat
+    let spacing: CGFloat?
 
 
     /// Creates an instance with the given alignment and spacing.
     /// - Parameters:
     ///   - alignment: The alignment guide for aligning the subviews in the flow.
     ///   - spacing: The distance between subviews. This spacing is not applied before the first, or after the last view in a row.
-    public init(alignment: Alignment = .topLeading, spacing: CGFloat) {
+    public init(alignment: Alignment = .topLeading, spacing: CGFloat? = nil) {
         self.alignment = alignment
         self.spacing = spacing
     }
@@ -40,6 +39,7 @@ public struct Flow: Layout {
         var maxX: CGFloat = 0
         var maxY: CGFloat = 0
 
+        var previousRow: Row<LayoutSubviewType>? = nil
         var currentRow = Row<LayoutSubviewType>(views: [], spacing: spacing)
 
         for currentSubview in subviews {
@@ -48,10 +48,11 @@ public struct Flow: Layout {
 
             if wouldOverflow {
                 maxX = max(maxX, currentRow.minimumWidth())
-                // !!!: Do something smarter about figuring out the vertical spacing between this row and the next.
-                currentPoint.y += currentRow.averageSpacing() + currentRow.maxHeight()
-
+                previousRow = currentRow
                 currentRow = Row(views: [currentSubview], spacing: spacing)
+                let verticalSpacing = previousRow.map { currentRow.spacing(to: $0) } ?? 0
+
+                currentPoint.y += verticalSpacing + (previousRow?.maxHeight() ?? 0)
 
             } else {
                 currentRow.append(currentSubview)
@@ -88,6 +89,8 @@ public struct Flow: Layout {
         }
 
         var currentPoint = CGPoint(x: bounds.minX, y: bounds.minY)
+
+        var previousRow: Row<LayoutSubviewType>? = nil
         var currentRow = Row<LayoutSubviewType>(spacing: spacing)
 
         for (subviewIndex, currentSubview) in subviews.enumerated() {
@@ -162,8 +165,10 @@ public struct Flow: Layout {
                 }
 
                 currentPoint.x = bounds.minX
-                // !!!: Do something intelligent to get the vertical spacing to the next row...
-                currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + spacing // <- here
+                previousRow = currentRow
+                currentRow = Row(views: [currentSubview], spacing: spacing)
+                let verticalSpacing = previousRow.map { currentRow.spacing(to: $0) } ?? 0
+                currentPoint.y += (subviewAnchor == .topLeading ? totalRowHeight : 0) + verticalSpacing
                 currentRow = Row(views: [currentSubview], spacing: spacing)
 
                 if isLast && wouldOverflow {
