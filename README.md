@@ -30,7 +30,14 @@ struct ContentView: View {
     @State var tags: [Tag]
 
     var body: some View {
-        Flow(alignment: .topLeading, spacing: 7) {
+        // Default .topLeading alignment and system spacing.
+        Flow { 
+            ForEach(tags) { tag in
+                TagView(tag)
+            }
+        }
+        // Alignment and spacing specified.
+        Flow(alignment: .bottomTrailing, spacing: 10) {
             ForEach(tags) { tag in
                 TagView(tag)
             }
