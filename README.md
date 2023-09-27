@@ -24,13 +24,13 @@ Alignment and spacing changes can be animated and since Flow conforms to the `La
 ## Usage
 
 ```swift
-import FlowLayout
+import Flow
 
 struct ContentView: View {
     @State var tags: [Tag]
 
     var body: some View {
-        FlowLayout(alignment: .topLeading, spacing: 7) {
+        Flow(alignment: .topLeading, spacing: 7) {
             ForEach(tags) { tag in
                 TagView(tag)
             }
