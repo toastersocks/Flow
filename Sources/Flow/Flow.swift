@@ -235,6 +235,7 @@ extension CGSize: Hashable {
     }
 }
 
+#if DEBUG
 #Preview("System Spacing") {
     VStack(alignment: .leading, spacing: 0) {
         Color.clear //This makes the previews align to the leading edge
@@ -520,3 +521,4 @@ extension CGSize: Hashable {
         .border(.red)
     }
 }
+#endif
