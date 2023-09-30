@@ -65,8 +65,10 @@ struct MockViewDimensions: ViewDimensionsProtocol {
         case .trailing: width
         case .leading: .zero
         case .center: width * 0.5
+        #if !os(watchOS) && !os(tvOS)
         case .listRowSeparatorLeading: .zero
         case .listRowSeparatorTrailing: width
+        #endif
         default: width * 0.5
         }
     }
@@ -87,8 +89,10 @@ struct MockViewDimensions: ViewDimensionsProtocol {
         case .trailing: width
         case .leading: .zero
         case .center: width * 0.5
+        #if !os(watchOS) && !os(tvOS)
         case .listRowSeparatorLeading: .zero
         case .listRowSeparatorTrailing: width
+        #endif
         default: width * 0.5
         }
     }
