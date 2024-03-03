@@ -108,7 +108,7 @@ public struct Flow: Layout {
                 let totalRowWidth = currentRow.minimumWidth()
                 let totalRowHeight = currentRow.maxHeight()
 
-                let unusedHorizontalSpace = bounds.maxX - totalRowWidth
+                let unusedHorizontalSpace = bounds.width - totalRowWidth
                 var subviewAnchor: UnitPoint = .topLeading
 
                 switch alignment {
@@ -182,10 +182,10 @@ public struct Flow: Layout {
                         currentPoint.y += currentViewSize.height
                         fallthrough
                     case .topTrailing:
-                        let unusedHorizontalSpace = bounds.maxX - currentViewSize.width
+                        let unusedHorizontalSpace = bounds.width - currentViewSize.width
                         currentPoint.x = bounds.minX + unusedHorizontalSpace
                     case .center, .centerDistribute:
-                        let unusedHorizontalSpace = bounds.maxX - currentViewSize.width
+                        let unusedHorizontalSpace = bounds.width - currentViewSize.width
                         currentPoint.x = bounds.minX + unusedHorizontalSpace * 0.5
                     }
                     place(view: currentSubview, at: currentPoint, anchor: subviewAnchor)
@@ -236,6 +236,26 @@ extension CGSize: Hashable {
 }
 
 #if DEBUG
+#Preview("Nested Container (Non-zero bounds origin)") {
+    NavigationStack {
+        Form {
+            NavigationLink {
+                EmptyView()
+            } label: {
+                LabeledContent {
+                    Flow(alignment: .bottomTrailing) {
+                        ForEach(PreviewData.tags[0...3]) {
+                            TagView(tag: $0)
+                        }
+                    }
+                } label: {
+                    Text("Label")
+                }
+            }
+        }
+    }
+}
+
 #Preview("System Spacing") {
     VStack(alignment: .leading, spacing: 0) {
         Color.clear //This makes the previews align to the leading edge
