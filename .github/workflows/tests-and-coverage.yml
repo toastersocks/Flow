@@ -1,0 +1,29 @@
+name: Swift Test and Coverage
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macOS-14
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Select Xcode Version
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+      
+    - name: Install Dependencies
+      run: swift package resolve
+      
+    - name: Run Tests and Generate Coverage
+      run: |
+        xcodebuild test -scheme Flow -destination 'platform=iOS Simulator,name=iPhone 15' -enableCodeCoverage YES
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        # files: ./coverage.json
+        fail_ci_if_error: true
+        verbose: true
+        token: ${{ secrets.CODECOV_TOKEN }}
