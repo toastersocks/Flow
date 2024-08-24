@@ -22,7 +22,7 @@ final class FlowTests: XCTestCase {
 
             let sizeThatFits = flow.sizeThatFits(proposal: ProposedViewSize(width: 393, height: 1000), subviews: subviews)
             let placedSizes = flow.getRects(for: subviews, in: CGRect(origin: .zero, size: sizeThatFits))
-            let placedSizesBoundingBox = placedSizes.reduce(placedSizes.first ?? .zero) { $0.union($1) }
+            let placedSizesBoundingBox = placedSizes.reduce(CGRect.null) { $0.union($1) }
 
             return sizeThatFits.isNearlyEqual(to: placedSizesBoundingBox.size)
         }

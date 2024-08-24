@@ -121,3 +121,9 @@ struct MockLayoutSubview: LayoutSubviewProtocol {
         key.defaultValue
     }
 }
+
+extension Collection<CGRect> {
+    func merged() -> CGRect {
+        reduce(.null) { $0.union($1) }
+    }
+}
