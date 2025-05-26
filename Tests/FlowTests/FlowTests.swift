@@ -1,10 +1,12 @@
-import XCTest
+import Testing
 @testable import Flow
+import Foundation
 import struct SwiftUI.ProposedViewSize
 import SwiftCheck
 
-
-final class FlowTests: XCTestCase {
+@Suite
+final class FlowTests {
+    @Test("sizeThatFits matches getRects bounding box.")
     func testSizeThatFitsMatchesGetRectsBoundingBox() throws {
         let checkerArguments = CheckerArguments(maxAllowableSuccessfulTests: 1_000)
         let spacingGenerator = Gen<CGFloat?>.frequency(
