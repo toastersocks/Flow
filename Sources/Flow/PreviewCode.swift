@@ -150,15 +150,15 @@ extension Color {
     }
 
     enum Rainbow {
-        static var red: Color     = .red
-        static var orange: Color  = .orange
-        static var yellow: Color  = .yellow
-        static var green: Color   = .green
-        static var blue: Color    = .blue
-        static var indigo: Color  = .indigo
-        static var violet: Color  = .purple
+        static let red: Color     = .red
+        static let orange: Color  = .orange
+        static let yellow: Color  = .yellow
+        static let green: Color   = .green
+        static let blue: Color    = .blue
+        static let indigo: Color  = .indigo
+        static let violet: Color  = .purple
 
-        static var allColors: [Color] = [
+        static let allColors: [Color] = [
             .red,
             .orange,
             .yellow,

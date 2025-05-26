@@ -10,7 +10,7 @@ import SwiftCheck
 @testable import Flow
 
 
-extension CGSize: Arbitrary {
+extension CGSize: @retroactive Arbitrary {
     public static var arbitrary: Gen<CGSize> {
         Gen<CGSize>.compose { composer in
             CGSize(width: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 410 }),
@@ -19,7 +19,7 @@ extension CGSize: Arbitrary {
     }
 }
 
-extension CGFloat: Arbitrary {
+extension CGFloat: @retroactive Arbitrary {
     public static var arbitrary: Gen<CGFloat> {
         Gen<CGFloat>.compose { composer in
             CGFloat(Double.arbitrary.generate)
@@ -38,7 +38,7 @@ extension MockLayoutSubview: Arbitrary {
     }
 }
 
-extension Flow.Alignment: Arbitrary {
+extension Flow.Alignment: @retroactive Arbitrary {
     public static var arbitrary: Gen<Flow.Alignment> {
         Gen<Flow.Alignment>.fromElements(of: [.topLeading, .topTrailing, .bottomLeading, .bottomTrailing, .center, .centerJustify, .centerDistribute])
     }
