@@ -270,7 +270,6 @@ extension CGSize: Hashable {
         }
         .border(.red)
     }
-    .previewDisplayName("Trailing Random sizes")
 }
 
 #Preview("Leading Shuffled") {
