@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: macOS-14
+    runs-on: macOS-15
     steps:
     - uses: actions/checkout@v4
     
@@ -18,7 +18,7 @@ jobs:
       
     - name: Run Tests and Generate Coverage
       run: |
-        xcodebuild test -scheme Flow -destination 'platform=iOS Simulator,name=iPhone 15' -enableCodeCoverage YES
+        xcodebuild test -scheme Flow -destination 'platform=iOS Simulator,name=iPhone 16' -enableCodeCoverage YES
 
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v4
