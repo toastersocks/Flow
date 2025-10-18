@@ -26,14 +26,8 @@ extension CGFloat: @retroactive Arbitrary {
         }
     }
 }
-
-extension Flow.Alignment: @retroactive Arbitrary {
-    public static var arbitrary: Gen<Flow.Alignment> {
-        Gen<Flow.Alignment>.fromElements(of: [.topLeading, .topTrailing, .bottomLeading, .bottomTrailing, .center, .centerJustify, .centerDistribute])
-    }
-}
 #else
-extension CGSize: @retroactive Arbitrary {
+extension CGSize: Arbitrary {
     public static var arbitrary: Gen<CGSize> {
         Gen<CGSize>.compose { composer in
             CGSize(width: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 410 }),
@@ -42,20 +36,20 @@ extension CGSize: @retroactive Arbitrary {
     }
 }
 
-extension CGFloat: @retroactive Arbitrary {
+extension CGFloat: Arbitrary {
     public static var arbitrary: Gen<CGFloat> {
         Gen<CGFloat>.compose { composer in
             CGFloat(Double.arbitrary.generate)
         }
     }
+}
+#endif
 
-
-extension Flow.Alignment: @retroactive Arbitrary {
+extension Flow.Alignment: Arbitrary {
     public static var arbitrary: Gen<Flow.Alignment> {
         Gen<Flow.Alignment>.fromElements(of: [.topLeading, .topTrailing, .bottomLeading, .bottomTrailing, .center, .centerJustify, .centerDistribute])
     }
 }
-#endif
 
 extension MockLayoutSubview: Arbitrary {
     public static var arbitrary: Gen<MockLayoutSubview> {

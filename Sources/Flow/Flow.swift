@@ -2,7 +2,7 @@ import SwiftUI
 
 
 /// A Flow layout arranges its subviews in a line, wrapping at the edge and starting new lines as needed, similar to how words wrap in a paragraph.
-public struct Flow: Layout {
+public struct Flow: Layout, Sendable {
     /// The alignment of the subviews within the container.
     let alignment: Alignment
     /// The space between subviews.
@@ -210,7 +210,7 @@ public struct Flow: Layout {
     }
 
     /// The alignment of subviews within the flow.
-    public enum Alignment: CaseIterable {
+    public enum Alignment: CaseIterable, Sendable {
         /// Aligns the tops of subviews within a row. Rows are flush with the leading edge of the container.
         case topLeading
         /// Aligns the tops of subviews within a row. Rows are flush with the trailing edge of the container.

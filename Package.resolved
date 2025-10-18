@@ -1,14 +1,15 @@
 {
+  "originHash" : "646b9909f445068717652e287e28b1bc2dd54caf0a8709675ad8177046380da6",
   "pins" : [
     {
       "identity" : "swiftcheck",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/toastersocks/SwiftCheck",
       "state" : {
-        "revision" : "6aaf58674af6b7d2dde0bc706a1658f8b7709854",
-        "version" : "0.13.0"
+        "revision" : "13dcf3af3c06461f3e32846a94f4a7007deaf089",
+        "version" : "0.13.1"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
