@@ -3,19 +3,20 @@ name: Swift Test and Coverage
 on: [push, pull_request]
 
 jobs:
-  build:
+  test-swift-6:
+    name: Test with Swift 6 (Latest Xcode)
     runs-on: macOS-15
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Select Xcode Version
       uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: latest-stable
-      
+
     - name: Install Dependencies
       run: swift package resolve
-      
+
     - name: Run Tests and Generate Coverage
       run: |
         xcodebuild test -scheme Flow -destination 'platform=iOS Simulator,name=iPhone 16' -enableCodeCoverage YES
@@ -27,3 +28,21 @@ jobs:
         fail_ci_if_error: true
         verbose: true
         token: ${{ secrets.CODECOV_TOKEN }}
+
+  test-swift-5:
+    name: Test with Swift 5.10 (Xcode 15.4)
+    runs-on: macOS-14
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Select Xcode 15.4 (Swift 5.10)
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.4'
+
+    - name: Install Dependencies
+      run: swift package resolve
+
+    - name: Run Tests
+      run: |
+        xcodebuild test -scheme Flow -destination 'platform=iOS Simulator,name=iPhone 15'
