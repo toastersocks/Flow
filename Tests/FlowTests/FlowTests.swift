@@ -1,3 +1,4 @@
+#if swift(>=6.0)
 import Testing
 @testable import Flow
 import Foundation
@@ -30,3 +31,4 @@ final class FlowTests {
         }
     }
 }
+#endif
