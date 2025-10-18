@@ -9,7 +9,7 @@ import CoreGraphics
 import SwiftCheck
 @testable import Flow
 
-
+#if swift(>=6.0)
 extension CGSize: @retroactive Arbitrary {
     public static var arbitrary: Gen<CGSize> {
         Gen<CGSize>.compose { composer in
@@ -27,6 +27,36 @@ extension CGFloat: @retroactive Arbitrary {
     }
 }
 
+extension Flow.Alignment: @retroactive Arbitrary {
+    public static var arbitrary: Gen<Flow.Alignment> {
+        Gen<Flow.Alignment>.fromElements(of: [.topLeading, .topTrailing, .bottomLeading, .bottomTrailing, .center, .centerJustify, .centerDistribute])
+    }
+}
+#else
+extension CGSize: @retroactive Arbitrary {
+    public static var arbitrary: Gen<CGSize> {
+        Gen<CGSize>.compose { composer in
+            CGSize(width: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 410 }),
+                   height: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 1000 }))
+        }
+    }
+}
+
+extension CGFloat: @retroactive Arbitrary {
+    public static var arbitrary: Gen<CGFloat> {
+        Gen<CGFloat>.compose { composer in
+            CGFloat(Double.arbitrary.generate)
+        }
+    }
+
+
+extension Flow.Alignment: @retroactive Arbitrary {
+    public static var arbitrary: Gen<Flow.Alignment> {
+        Gen<Flow.Alignment>.fromElements(of: [.topLeading, .topTrailing, .bottomLeading, .bottomTrailing, .center, .centerJustify, .centerDistribute])
+    }
+}
+#endif
+
 extension MockLayoutSubview: Arbitrary {
     public static var arbitrary: Gen<MockLayoutSubview> {
         Gen<MockLayoutSubview>.compose { composer in
@@ -35,11 +65,5 @@ extension MockLayoutSubview: Arbitrary {
                               width: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 410 }),
                               height: composer.generate(using: Double.arbitrary.suchThat { $0 >= 0 && $0 <= 1000 }))
         }
-    }
-}
-
-extension Flow.Alignment: @retroactive Arbitrary {
-    public static var arbitrary: Gen<Flow.Alignment> {
-        Gen<Flow.Alignment>.fromElements(of: [.topLeading, .topTrailing, .bottomLeading, .bottomTrailing, .center, .centerJustify, .centerDistribute])
     }
 }
