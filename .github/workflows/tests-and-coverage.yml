@@ -1,48 +1,91 @@
-name: Swift Test and Coverage
+name: Test and Coverage
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
 
 jobs:
-  test-swift-6:
-    name: Test with Swift 6 (Latest Xcode)
-    runs-on: macOS-15
+  test-xcode-16:
+    name: Xcode 16.4 / Swift 6 & 5
+    runs-on: macos-15
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Select Xcode Version
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: latest-stable
+      - name: Select Xcode 16.4
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
 
-    - name: Install Dependencies
-      run: swift package resolve
+      - name: Show Xcode version
+        run: xcodebuild -version
 
-    - name: Run Tests and Generate Coverage
-      run: |
-        xcodebuild test -scheme Flow -destination 'platform=iOS Simulator,name=iPhone 16' -enableCodeCoverage YES
+      - name: Show Swift version
+        run: swift --version
 
-    - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        # files: ./coverage.json
-        fail_ci_if_error: true
-        verbose: true
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Build with Swift 6 language mode
+        run: |
+          xcodebuild build \
+            -scheme Flow \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -skipPackagePluginValidation
 
-  test-swift-5:
-    name: Test with Swift 5.10 (Xcode 15.4)
-    runs-on: macOS-14
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -scheme Flow \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -enableCodeCoverage YES \
+            -skipPackagePluginValidation
+
+      - name: Build with Swift 5 language mode
+        run: |
+          xcodebuild build \
+            -scheme Flow \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -skipPackagePluginValidation \
+            SWIFT_VERSION=5
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  test-xcode-latest:
+    name: Xcode Latest / Swift 6 & 5
+    runs-on: macos-15
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Select Xcode 15.4 (Swift 5.10)
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: '15.4'
+      - name: Select Latest Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
-    - name: Install Dependencies
-      run: swift package resolve
+      - name: Show Xcode version
+        run: xcodebuild -version
 
-    - name: Run Tests
-      run: |
-        xcodebuild test -scheme Flow -destination 'platform=iOS Simulator,name=iPhone 15'
+      - name: Show Swift version
+        run: swift --version
+
+      - name: Build with Swift 6 language mode
+        run: |
+          xcodebuild build \
+            -scheme Flow \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -skipPackagePluginValidation
+
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -scheme Flow \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -skipPackagePluginValidation
+
+      - name: Build with Swift 5 language mode
+        run: |
+          xcodebuild build \
+            -scheme Flow \
+            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -skipPackagePluginValidation \
+            SWIFT_VERSION=5
