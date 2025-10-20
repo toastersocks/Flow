@@ -149,7 +149,7 @@ extension Color {
         Rainbow.self
     }
 
-    enum Rainbow {
+    enum Rainbow: Sendable {
         static let red: Color     = .red
         static let orange: Color  = .orange
         static let yellow: Color  = .yellow
