@@ -227,21 +227,6 @@ public struct Flow: Layout, Sendable {
         case centerJustify
     }
 }
-#if swift(>=6.0)
-extension CGSize: @retroactive Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(width)
-        hasher.combine(height)
-    }
-}
-#else
-extension CGSize: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(width)
-        hasher.combine(height)
-    }
-}
-#endif
 
 #if DEBUG
 #Preview("Nested Container (Non-zero bounds origin)") {

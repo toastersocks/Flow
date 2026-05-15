@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Flow",
-    platforms: [.iOS(.v16), .macOS(.v13), .macCatalyst(.v16), .tvOS(.v16), .watchOS(.v9)],
+    platforms: [.iOS(.v18), .macOS(.v15), .macCatalyst(.v18), .tvOS(.v18), .watchOS(.v11)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -15,6 +15,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/toastersocks/SwiftCheck", .upToNextMajor(from: "0.13.1")),
+        .package(url: "https://github.com/nesevis/exhaust", .upToNextMajor(from: "0.1.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -24,6 +25,11 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "FlowTests",
-            dependencies: ["Flow", "SwiftCheck"]),
+            dependencies: [
+                "Flow",
+                "SwiftCheck",
+                .product(name: "Exhaust", package:"exhaust"),
+            ]
+        ),
     ]
 )

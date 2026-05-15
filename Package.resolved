@@ -1,6 +1,33 @@
 {
-  "originHash" : "646b9909f445068717652e287e28b1bc2dd54caf0a8709675ad8177046380da6",
+  "originHash" : "0de11a45b2ab90094632b81b8bdf984f5ca3109cbc25c7b1cf6c9882a891011a",
   "pins" : [
+    {
+      "identity" : "exhaust",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nesevis/exhaust",
+      "state" : {
+        "revision" : "97b61c81e1344ec6d947684b47bcfdf7bcb42c52",
+        "version" : "0.8.1"
+      }
+    },
+    {
+      "identity" : "swift-custom-dump",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-custom-dump",
+      "state" : {
+        "revision" : "06c57924455064182d6b217f06ebc05d00cb2990",
+        "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
+      }
+    },
     {
       "identity" : "swiftcheck",
       "kind" : "remoteSourceControl",
@@ -8,6 +35,24 @@
       "state" : {
         "revision" : "13dcf3af3c06461f3e32846a94f4a7007deaf089",
         "version" : "0.13.1"
+      }
+    },
+    {
+      "identity" : "swiftlintplugins",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
+      "state" : {
+        "revision" : "8a4640d14777685ba8f14e832373160498fbab92",
+        "version" : "0.63.2"
+      }
+    },
+    {
+      "identity" : "xctest-dynamic-overlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
+      "state" : {
+        "revision" : "dfd70507def84cb5fb821278448a262c6ff2bbad",
+        "version" : "1.9.0"
       }
     }
   ],

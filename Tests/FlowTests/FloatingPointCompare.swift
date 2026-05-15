@@ -11,7 +11,7 @@ import CoreGraphics
 // We want to consider floats that are extremely (for our purposes) close in value (i.e. a rounding error) to be considered equal.
 extension CGFloat {
     func isEqual(to other: Self, tolerance: Self) -> Bool {
-        abs(self - other) < tolerance
+        abs(self - other) <= tolerance * Swift.max(1, abs(self), abs(other))
     }
 
     func isNearlyEqual(to other: Self) -> Bool {
